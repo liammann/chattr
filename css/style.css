@@ -1,0 +1,115 @@
+@import url(https://fonts.googleapis.com/css?family=Architects+Daughter);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+  *:hover, *:before:hover, *:after:hover {
+    transition: all 0.2s linear; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif; }
+
+header {
+  background: #16a085;
+  overflow: hidden;
+  color: white; }
+  header a.logo {
+    text-decoration: none;
+    color: white;
+    float: left;
+    padding: 10px;
+    margin: 0 -10px;
+    font-size: 40px;
+    transition: all 0.2s linear; }
+    header a.logo:hover {
+      background: #107360; }
+    header a.logo span {
+      font-size: 32px;
+      color: white;
+      margin-top: -5px;
+      font-family: "Architects Daughter", cursive; }
+  header nav {
+    float: right;
+    width: 50%; }
+    header nav a {
+      text-decoration: none;
+      font-size: 20px;
+      margin: 0 5px;
+      padding: 25px;
+      color: white;
+      float: right; }
+      header nav a:hover {
+        background: #107360; }
+
+#view, .wrapper {
+  max-width: 90%;
+  margin: auto; }
+
+#view section.chatroom-card {
+  background: #f2f2f2;
+  border: 1px solid #d6d6d6;
+  width: 49%;
+  margin: 0.5%;
+  float: left; }
+  #view section.chatroom-card p {
+    margin: 0;
+    padding: 5px;
+    color: #999999;
+    float: right; }
+  #view section.chatroom-card h2 {
+    margin: 0;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 32px;
+    color: #262626; }
+  #view section.chatroom-card a {
+    margin: 1%;
+    float: right;
+    background: #159c81;
+    border: 1px solid #0f6f5c;
+    color: white;
+    text-align: left;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 2px; }
+    #view section.chatroom-card a:hover {
+      background: #107360; }
+#view .form-element {
+  width: 100%;
+  padding: 10px;
+  overflow: hidden;
+  font-size: 20px; }
+  #view .form-element label {
+    width: 20%;
+    float: left;
+    text-align: right;
+    padding: 1% 0; }
+  #view .form-element input[type=text] {
+    width: 79%;
+    float: right;
+    padding: 1%;
+    font-size: 20px; }
+  #view .form-element.color {
+    width: 32%;
+    float: left; }
+    #view .form-element.color label {
+      width: 64%; }
+    #view .form-element.color input {
+      margin: 10px 15px; }
+#view .site-config {
+  background-color: #f2f2f2;
+  border: 1px solid #bfbfbf;
+  overflow: hidden;
+  margin: 10px 0; }
+  #view .site-config button {
+    background: #c0392b;
+    width: 99%;
+    border: 1px solid #962d22;
+    margin: 0.5%;
+    padding: 10px;
+    color: white;
+    font-size: 18px; }
