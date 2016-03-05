@@ -28,30 +28,37 @@
     <h1>Chatroom: <%= id %> </h1>
     <div class="form-element">
       <label for="name">Name: </label>
-      <input type="text" id="name" value="<%= name %>">
+      <input type="text" id="name" value="">
     </div>
-    <section>
-      Site Config <button> Add Site</button>
+   <section>
+      Site Config
+      <div id="site-configs-con"></div>
+      <button id="add-site-config"> Add Site</button>
     </section>
-    <div class="site-template ">
-      <section class="site-config ">
+    <footer>
+      <button id="add-new">Submit</button>
+    </footer>
+
+
+ 
+    <div style="display: none" id="site-template">
+      <section>
       <div class="form-element">
         <label for="site">Site URL: </label>
-        <input type="text" id="site" value="">
+        <input type="text" id="site" class="siteURL" value="">
       </div>
       <div class="form-element color">
-        <label for="background-color">Background Colour: </label>
-        <input type="color" id="background-color" value="">
+        <label for=" ">Background Colour: </label>
+        <input type="color" id="siteBGColour" class="siteBGColour" value="">
       </div>
       <div class="form-element color">
-        <label for="text-colour">Text Colour: </label>
-        <input type="color" id="text-colour" value="">
+        <label for=" ">Text Colour: </label>
+        <input type="color" id="siteTextColour"  class="siteTextColour" value="">
       </div>
-      <button> Remove Site</button>
+      <button class="remove-site-config"> Remove Site</button>
       
       </section>
       </div>
-
 
   </script>
   <script type="text/html" id="newchattroom">
@@ -61,23 +68,30 @@
       <input type="text" id="name" value="">
     </div>
     <section>
-      Site Config <button> Add Site</button>
+      Site Config
+      <div id="site-configs-con"></div>
+      <button id="add-site-config"> Add Site</button>
     </section>
-    <div class="site-template ">
-      <section class="site-config ">
+    <footer>
+      <button id="add-new">Create</button>
+    </footer>
+
+
+    <div style="display: none" id="site-template">
+      <section>
       <div class="form-element">
         <label for="site">Site URL: </label>
-        <input type="text" id="site" value="">
+        <input type="text" id="site" class="siteURL" value="">
       </div>
       <div class="form-element color">
-        <label for="background-color">Background Colour: </label>
-        <input type="color" id="background-color" value="">
+        <label for=" ">Background Colour: </label>
+        <input type="color" id="siteBGColour" class="siteBGColour" value="">
       </div>
       <div class="form-element color">
-        <label for="text-colour">Text Colour: </label>
-        <input type="color" id="text-colour" value="">
+        <label for=" ">Text Colour: </label>
+        <input type="color" id="siteTextColour"  class="siteTextColour" value="">
       </div>
-      <button> Remove Site</button>
+      <button class="remove-site-config"> Remove Site</button>
       
       </section>
       </div>

@@ -68,7 +68,7 @@ header
 		p 
 			margin: 0
 			padding: 5px
-			color: lighten(#333, 40%)
+			color: lighten(#333333, 40%)
 			float: right
 
 		h2 
@@ -76,7 +76,7 @@ header
 			padding: 5px
 			font-weight: bold
 			font-size: 32px
-			color: darken(#333, 5%)
+			color: darken(#333333, 5%)
 
 		a 
 			margin: 1%
@@ -91,6 +91,35 @@ header
 
 			&:hover 
 				background: darken($background-color,10%)
+
+	#add-site-config 
+		background: #27ae60
+		border: 1px solid darken(#27ae60,10%)
+		font-size: 18px
+		color: white
+		width: 100%
+		padding: 7px
+		&:hover 
+			background: darken(#27ae60,10%)
+			color: white
+	footer 
+		background-color: lighten(lightgrey,10%)
+		margin: 10px -10% 0 -10%
+		padding: 20px 10%
+		overflow: hidden
+
+		button 
+			padding: 10px 20px
+			color: black
+			float: right
+			min-width: 30%
+			background: white
+			font-size: 22px
+			border: 1px solid darken(lightgrey, 20%)
+			&:hover 
+				background: darken(white,70%)
+				color: white
+
 	.form-element 
 		width: 100%
 		padding: 10px
@@ -118,8 +147,8 @@ header
 			input
 				margin: 10px 15px
 	.site-config 
-		background-color: lighten(#333, 75%)
-		border: 1px solid lighten(#333, 55%)
+		background-color: lighten(#333333, 75%)
+		border: 1px solid lighten(#333333, 55%)
 		overflow: hidden
 		margin: 10px 0
 
@@ -128,6 +157,10 @@ header
 			width: 99%
 			border: 1px solid darken(#c0392b,10%)
 			margin: 0.5%
-			padding: 10px
+			padding: 5px
 			color: white
-			font-size: 18px
+			font-size: 16px
+
+			&:hover 
+				background: darken(#c0392b,10%)
+				color: white

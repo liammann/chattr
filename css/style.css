@@ -78,6 +78,32 @@ header {
     border-radius: 2px; }
     #view section.chatroom-card a:hover {
       background: #107360; }
+#view #add-site-config {
+  background: #27ae60;
+  border: 1px solid #1e8449;
+  font-size: 18px;
+  color: white;
+  width: 100%;
+  padding: 7px; }
+  #view #add-site-config:hover {
+    background: #1e8449;
+    color: white; }
+#view footer {
+  background-color: #ececec;
+  margin: 10px -10% 0 -10%;
+  padding: 20px 10%;
+  overflow: hidden; }
+  #view footer button {
+    padding: 10px 20px;
+    color: black;
+    float: right;
+    min-width: 30%;
+    background: white;
+    font-size: 22px;
+    border: 1px solid #a0a0a0; }
+    #view footer button:hover {
+      background: #4d4d4d;
+      color: white; }
 #view .form-element {
   width: 100%;
   padding: 10px;
@@ -110,6 +136,9 @@ header {
     width: 99%;
     border: 1px solid #962d22;
     margin: 0.5%;
-    padding: 10px;
+    padding: 5px;
     color: white;
-    font-size: 18px; }
+    font-size: 16px; }
+    #view .site-config button:hover {
+      background: #962d22;
+      color: white; }

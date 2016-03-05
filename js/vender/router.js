@@ -5,13 +5,13 @@
       // A hash to store our routes:
       var routes = {};
       // The route registering function:
-      function route (path, templateId, controller) {
+      function route (path, templateId, controller, view) {
         // Allow route(path, controller) for template less routes:
         if (typeof templateId === 'function') {
           controller = templateId;
           templateId = null;
         }
-        routes[path] = {templateId: templateId, controller: controller, wildcard: null};
+        routes[path] = {templateId: templateId, controller: controller, view: view, wildcard: null};
       }
       var el = null, current = null;
       function router () {
@@ -28,13 +28,12 @@
         if(routes[fakeURI] !== undefined){
           var route = routes[fakeURI];
           route.wildcard = wildcard;
-        }else if (routes[url] !== undefined){
+        } else if (routes[url] !== undefined){
           var route = routes[url];
-        }else {
+        } else {
           var route = routes["404"];
 
         }
-        console.log(route);
 
         // Is it a route without template?
         if (route && !route.templateId) {
@@ -58,18 +57,28 @@
           current = {
             controller: new route.controller(wildcard), // add wildcard access - liam
             template: tmpl(route.templateId),
-            render: function () {
+            render: function (_callback) {
               // Render route template with John Resig's template engine:
               // if (wildcard !== null){
                 el.innerHTML = this.template(this.controller);
-
+                if (typeof _callback === 'function' ){
+                  _callback();
+                }            
             }
+
           };
+
+          function renderDisplay(){
+              current.render(route.view);    
+            }
+
           // Render directly:
-          current.render();
+          renderDisplay();
+
           // And observe for changes:
           Object.observe(current.controller, current.render.bind(current));
         }
+
       }
       // Listen on hash change:
       this.addEventListener('hashchange', router);
@@ -77,4 +86,5 @@
       this.addEventListener('load', router);
       // Expose the route register function:
       this.route = route;
+
     })();
