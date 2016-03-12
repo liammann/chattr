@@ -16,7 +16,7 @@
   <paper-input id="name" value="{{name}}" label="Name"></paper-input>
 
   <template is="dom-repeat" items="{{siteConfigs}}">
-    <site-config bgcolour="{{item.bg_colour}}" textcolour="{{item.text_colour}}" uri="{{item.uri}}"  id="{{index}}"> Site Config</site-config>
+    <site-config chatroom="{{item.chat_room_id}}" uid="{{item.id}}" bgcolour="{{item.bg_colour}}"  textcolour="{{item.text_colour}}" uri="{{item.uri}}"  id="{{index}}"> Site Config</site-config>
   </template>
   
   <paper-button on-click="newSite">New Site</paper-button>
@@ -35,9 +35,15 @@ Polymer ({
       observer: '_highlightChanged'
     }
   },
-  newSite: function(e){
 
-    this.push('siteConfigs', this.siteConfigs[this.siteConfigs.length-1]+1);
+  newSite: function(e){
+    this.method = "POST";
+    var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+    var USER_ID = '1'; 
+    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid+"/hosts"; 
+    var deflt = {"bg_colour": "fff", "text_colour": "000", "uri": "example.com"};
+    this.body = '{"host": ' + JSON.stringify(deflt) + '}';
+    this.push('siteConfigs',  deflt );
   },
   ready: function(){
     this.siteConfigs = [];
@@ -45,7 +51,6 @@ Polymer ({
     this.method = "GET";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
-
     this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
   },
   _highlightChanged: function(e) {
