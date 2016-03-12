@@ -32,45 +32,51 @@
    		uri : String,
    		textcolour : String, 
       bgcolour:  String,
-   },
-   _uriChanged: function(){
-    this.method = "PATCH";
-    var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
-    this.body = '{"host":{ "uri":"'+this.uri+'"}}';
-   },
-   _bgChanged: function(){
-    this.method = "PATCH";
-    var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
-    this.body = '{"host":{ "bg_colour":"'+this.bgcolour+'"}}';
-   },
-   _txtChanged: function(){
-    this.method = "PATCH";
-    var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
-    this.body = '{"host":{ "text_colour":"'+this.textcolour+'"}}';
-   },
-   ready: function(){
+      auto: Boolean, 
 
+  },
+  _uriChanged: function(){
+    if(this.auto){
+      this.method = "PATCH";
+      var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+      var USER_ID = '1'; 
+      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
+      this.body = '{"host":{ "uri":"'+this.uri+'"}}';
+    }
+  },
+  _bgChanged: function(){
+    if(this.auto){
+      this.method = "PATCH";
+      var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+      var USER_ID = '1'; 
+      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
+      this.body = '{"host":{ "bg_colour":"'+this.bgcolour+'"}}';
+    }
    },
+  _txtChanged: function(){
+    if(this.auto){
+      this.method = "PATCH";
+      var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+      var USER_ID = '1'; 
+      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
+      this.body = '{"host":{ "text_colour":"'+this.textcolour+'"}}';
+    }
+    
+  },
+  ready: function(){
+  },
           
-   removeSite: function(e){
-   	console.log(e.target.parentElement);
-   	e.target.parentElement.parentElement.removeChild(e.target.parentElement);
-
-    this.method = "DELETE";
-    var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
-    this.body = '';
-
-
-   },  
-   responseHandler: function(e){
+  removeSite: function(e){
+    if(this.auto){
+   	  e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+      this.method = "DELETE"; 
+      var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+      var USER_ID = '1'; 
+      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
+      this.body = '';
+    }
+  },  
+  responseHandler: function(e){
     // console.log(e);
   },
   errorHandler: function(e){
