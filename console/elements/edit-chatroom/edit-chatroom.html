@@ -1,0 +1,67 @@
+<dom-module id="edit-chatroom" >
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="import" href="../site-config/site-config.html">
+
+	<link rel="import" href="../../components/polymer/polymer.html">
+	<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+	<link rel="import" href="../../components/paper-button/paper-button.html">
+	<link rel="import" href="../../components/iron-icons/iron-icons.html">
+
+<template>
+  
+<iron-ajax auto id="ajax" url="{{url}}" method="{{method}}" body="{{body}}" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
+
+
+  <h1>Edit Chatroom {{uid}} </h1>
+  <content id="myContent"></content>
+  <paper-input id="name" value="{{name}}" label="Name"></paper-input>
+
+  <template is="dom-repeat" items="{{siteConfigs | kick(kick) }}">
+    <site-config id="{{index}}">Site Config</site-config>
+  </template>
+  
+  <paper-button on-click="newSite">New Site</paper-button>
+  <paper-button on-click="createChatroom">Create</paper-button>
+
+</template>
+
+<script>
+Polymer ({  
+  is: "edit-chatroom", 
+  properties: {
+    url : {type: String, notify: true, reflectToAttribute: true}, 
+    method : {type: String, notify: true, reflectToAttribute: true},
+    body: {type: Array, notify: true, reflectToAttribute: true},
+    name: {type: String, notify: true, reflectToAttribute: true},
+    uid: {
+      observer: '_highlightChanged'
+    }
+  },
+  ready: function(){
+    this.uid = 1;
+    this.method = "GET";
+    var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+    var USER_ID = '1'; 
+
+    this.url = BASE_URL+"users/"+USER_ID+"/chatrooms/"+this.uid; 
+  },
+  _highlightChanged: function(e) {
+    this.name ="";
+    this.method = "GET";
+    var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+    var USER_ID = '1'; 
+    this.url = BASE_URL+"users/"+USER_ID+"/chatrooms/"+this.uid; 
+  },
+
+  responseHandler: function(e){
+    console.log(e.detail.response.data);
+    this.name = e.detail.response.data.name;
+  },
+  errorHandler: function(e){
+    console.log(e);
+  }
+   
+}); 
+
+</script>
+</dom-module>

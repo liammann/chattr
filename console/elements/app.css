@@ -1,0 +1,50 @@
+@import url(https://fonts.googleapis.com/css?family=Architects+Daughter);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+  *:hover, *:before:hover, *:after:hover {
+    transition: all 0.2s linear; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif; }
+
+header {
+  background: #16a085;
+  overflow: hidden;
+  color: white; }
+  header a.logo {
+    text-decoration: none;
+    color: white;
+    float: left;
+    padding: 10px;
+    margin: 0 -10px;
+    font-size: 40px;
+    transition: all 0.2s linear; }
+    header a.logo:hover {
+      background: #107360; }
+    header a.logo span {
+      font-size: 32px;
+      color: white;
+      margin-top: -5px;
+      font-family: "Architects Daughter", cursive; }
+  header nav {
+    float: right;
+    width: 50%; }
+    header nav a {
+      text-decoration: none;
+      font-size: 20px;
+      margin: 0 5px;
+      padding: 25px;
+      color: white;
+      float: right; }
+      header nav a:hover {
+        background: #107360; }
+
+#view, .wrapper {
+  max-width: 90%;
+  margin: auto; }

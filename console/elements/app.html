@@ -1,0 +1,89 @@
+<link rel="stylesheet" type="text/css" href="app.css">
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/iron-pages/iron-pages.html">
+
+
+
+<link rel="import" href="chatroom-cards/chatroom-cards.html">
+<link rel="import" href="new-chatroom/new-chatroom.html">
+<link rel="import" href="edit-chatroom/edit-chatroom.html">
+
+
+<dom-module id="my-app">
+<template>
+	<header>
+		<div class="wrapper">
+			<a class="logo" href="#!/">Chattr |<span> Mangement Console</span></a>
+			<nav>
+				<a href="/console/#!/new">New Chatroom</a>
+				<a href="">My Home</a>
+			</nav>
+		</div>
+	</header>
+
+	<iron-pages change="{{change}}" selected="{{route}}" attr-for-selected="data-route" fit>
+		<section class="wrapper" data-route="home">
+			<chatroom-cards kick="{{kick}}">{{kick}}</chatroom-cards>
+		</section>
+		<section class="wrapper" data-route="new">
+		  	<new-chatroom></new-chatroom>
+		</section>
+		<section class="wrapper" id="edit" data-route="edit">
+		  	<edit-chatroom uid="{{uid}}" >{{uid}}</edit-chatroom>
+		</section>
+	</iron-pages>
+
+</template>
+
+<script type="text/javascript" src="../components/page/page.js"></script>
+<script>
+Polymer ({ 
+	is: "my-app", 
+    properties: {
+		route: String,
+		uid: String,
+		kick: String
+    },
+    ready: function(){
+		this.uid=0;
+		this.kick=0;
+		// console.log(this.$.edit.parentNode);
+
+    }
+
+});
+
+var pages = document.querySelector('my-app');
+pages.route = 'home';
+page.base('/console/')
+
+
+// Define routes
+page('/', function() {
+	pages.kick++;
+
+	pages.addEventListener('iron-select', function(e) {
+		pages.kick++;
+	});  
+
+	pages.route = 'home';
+});	
+
+page('/new', function() {
+  pages.route = 'new';
+});	
+page('/chatroom/:id', function(e) {
+	var uid = e.params.id;
+	pages.uid = uid;
+
+	pages.addEventListener('iron-select', function(e) {
+		pages.uid = uid;
+	});
+	pages.route = 'edit';
+});	
+
+page({ hashbang: true });
+
+
+</script>
+</dom-module>

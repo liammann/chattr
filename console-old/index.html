@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chattr: Mangement Console</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script type="text/javascript" src="js/vender/template.js"></script>
+  <script type="text/javascript" src="js/vender/router.js"></script>
+  <script type="text/html" id="404">
+    <h1>404</h1>
+  </script>
+  <script type="text/html" id="home">
+    <h1>Welcome to Chattr</h1>
+
+   <% for ( var i = 0; i < chatrooms.length; i++ ) { %>
+    <section class="chatroom-card">
+    <p>#<%= chatrooms[i].id %></p>
+    <h2><%= chatrooms[i].name %></h2>
+    <a href="#/chatroom/<%= chatrooms[i].id %>">Settings</a>
+    <a href="#/chatroom/<%= chatrooms[i].id %>">Embed</a>
+    </section>
+  <% } %> 
+
+
+
+  </script>
+  <script type="text/html" id="chatroom">
+    <h1>Chatroom: <%= id %> </h1>
+    <div class="form-element">
+      <label for="name">Name: </label>
+      <input type="text" id="name" value="">
+    </div>
+   <section>
+      Site Config
+      <div id="site-configs-con"></div>
+      <button id="add-site-config"> Add Site</button>
+    </section>
+    <footer>
+      <button id="add-new">Submit</button>
+    </footer>
+
+
+ 
+    <div style="display: none" id="site-template">
+      <section>
+      <div class="form-element">
+        <label for="site">Site URL: </label>
+        <input type="text" id="site" class="siteURL" value="">
+      </div>
+      <div class="form-element color">
+        <label for=" ">Background Colour: </label>
+        <input type="color" id="siteBGColour" class="siteBGColour" value="">
+      </div>
+      <div class="form-element color">
+        <label for=" ">Text Colour: </label>
+        <input type="color" id="siteTextColour"  class="siteTextColour" value="">
+      </div>
+      <button class="remove-site-config"> Remove Site</button>
+      
+      </section>
+      </div>
+
+  </script>
+  <script type="text/html" id="newchattroom">
+    <h1>New Chatroom </h1>
+    <div class="form-element">
+      <label for="name">Name: </label>
+      <input type="text" id="name" value="">
+    </div>
+    <section>
+      Site Config
+      <div id="site-configs-con"></div>
+      <button id="add-site-config"> Add Site</button>
+    </section>
+    <footer>
+      <button id="add-new">Create</button>
+    </footer>
+
+
+    <div style="display: none" id="site-template">
+      <section>
+      <div class="form-element">
+        <label for="site">Site URL: </label>
+        <input type="text" id="site" class="siteURL" value="">
+      </div>
+      <div class="form-element color">
+        <label for=" ">Background Colour: </label>
+        <input type="color" id="siteBGColour" class="siteBGColour" value="">
+      </div>
+      <div class="form-element color">
+        <label for=" ">Text Colour: </label>
+        <input type="color" id="siteTextColour"  class="siteTextColour" value="">
+      </div>
+      <button class="remove-site-config"> Remove Site</button>
+      
+      </section>
+      </div>
+
+
+  </script>
+</head>
+<body>
+<header>
+<div class="wrapper">
+<a class="logo" href="#/">Chattr |<span> Mangement Console</span></a>
+<nav>
+<a href="#/chatroom/new">New Chatroom</a>
+<a href="#/">My Home</a>
+</nav>
+</div>
+</header>
+  <div id="view"></div>
+  
+  <script type="text/javascript" src="js/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta chartset="utf-8" />
+		<script type="text/javascript">
+    // var ws = new WebSocket("ws://localhost:4000/socket/websocket");
+    var ws = new WebSocket("ws://salty-taiga-73405.herokuapp.com/socket/websocket");
+
+		function WebSocketSetup(chat)
+		{
+			ws.onopen = function() {
+        var data = {
+          topic: "rooms:lobby",
+          event: "phx_join",
+          payload: {
+            user: msg
+          },
+          ref: 1
+        };
+
+        ws.send(JSON.stringify(data));
+			};
+
+			ws.onmessage = function (evt) {
+        data = JSON.parse(evt.data);
+
+        switch (data.event) {
+          case "phx_reply": // ?
+
+            break;
+          case "user:entered": // broadcasted to all subscribers
+            chat.innerHTML += "<br />User entered chat!";
+            // console.log(data.event);
+            break;
+          case "phx_join":
+            // user entered chat successfully, for that user only
+            break;
+
+          case "phx_error": //?
+            break;
+          case "new:msg":
+            console.log(data.payload);
+            publishMessage(chat, data.payload);
+            break;
+          default:
+            console.log("Missed: " + data.event);
+            // user leave chat?
+        }
+			};
+
+			ws.onclose = function() {
+        chat.innerHTML += "<br />User left chat...";
+			};
+		}
+
+    function sendMessage(msg)
+    {
+      var data = {
+        topic: "rooms:lobby",
+        event: "new:msg",
+        payload: {
+          user: 1,
+          msg: msg
+        },
+        ref: 1
+      };
+
+      ws.send(JSON.stringify(data));
+    }
+
+    function publishMessage(chat, payload)
+    {
+      chat.innerHTML += "<br />" + payload.user + ": " + payload.body;
+    }
+
+    window.addEventListener('load', function(e) {
+      var chat = document.getElementById('chat'),
+          msg = document.getElementById('msg');
+
+      WebSocketSetup(chat);
+
+      msg.addEventListener('keyup', function (e) {
+        if (e.keyCode == 13) {
+          sendMessage(msg.value);
+          msg.value = '';
+        }
+      });
+    });
+		</script>
+	</head>
+	<body>
+    <div id="chat">
+    </div>
+    <input type="text" id="msg" autocomplete="off" />
+	</body>
+</html>

@@ -1,0 +1,62 @@
+
+
+<dom-module id="chatroom-cards">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/iron-icons/iron-icons.html">
+
+
+<template>
+  <h1> Welcome</h1>
+  <iron-ajax
+      id="ajax"
+          url="{{url}}"
+          on-response="handleResponse"
+          handleAs="json">
+  </iron-ajax>
+
+  <template is="dom-repeat" items="{{data}}">
+
+
+  
+    <section class="chatroom-card">     
+      <p>{{item.id}}</p>     
+      <h2>{{item.name}}</h2>     
+      <a href="#!/chatroom/{{item.id}}" tabindex="-1">
+        <paper-button href="new" class="green">
+          <iron-icon icon="icons:settings"></iron-icon> Settings 
+        </paper-button>
+      </a>
+    </section>
+  </template>
+
+</template>
+
+<script>
+  Polymer ({ 
+    is: "chatroom-cards", 
+    properties: {
+      kick: {
+       observer: '_highlightChanged'
+      },
+      url : {type: String, notify: true, reflectToAttribute: true}, 
+  },
+    ready: function(){
+      this.kick = 0;
+  },
+
+  _highlightChanged: function(e) {
+      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/1/chatrooms/';
+      Polymer.dom(this).node.$.ajax.generateRequest();
+  },
+
+  handleResponse: function(data){
+    this.data = data.detail.response.data;
+  }
+  }); 
+
+</script>
+</dom-module>

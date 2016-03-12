@@ -1,0 +1,41 @@
+<dom-module id="site-config">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/paper-input/paper-input.html">
+<link rel="import" href="../../components/iron-icons/iron-icons.html">
+
+<template>
+	<content></content>
+
+	<paper-button on-click="removeSite" class="remove">Remove Site</paper-button>
+	<paper-input id="site-url" label="Site URL" value="{{siteUrl}}"></paper-input>
+
+	<section class="colours">
+		<paper-input label="Background Colour" value="{{backgroundColor}}"><div prefix>#</div></paper-input>
+		<paper-input label="Text Colour" value="{{textColor}}"><div prefix>#</div></paper-input>
+	</section>
+
+</template>
+
+<script>
+  Polymer ({ 
+   is: "site-config", 
+
+   properties: {
+   		siteUrl : String,
+   		backgroundColor : String, 
+   		textColor : String, 
+
+   },
+          
+   removeSite: function(e){
+   	console.log(e.target.parentElement);
+   	e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+   }
+
+  }); 
+
+</script>
+</dom-module>

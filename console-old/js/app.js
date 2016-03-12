@@ -16,8 +16,7 @@ function dataAPI (method, sURL, data, fCallback, arguments1) {
   oReq.send(data);
 }
 
-var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/';
-var USER_ID = '1'; 
+
 
 
 
@@ -63,12 +62,9 @@ route('/chatroom/:id', 'chatroom', function (id) {
   var this2 = this;
 
   dataAPI('GET',BASE_URL+'api/v1/users/'+USER_ID+'/chatrooms/'+id, null, function () {
-    var responseText2 = JSON.parse(this.responseText);
+    var response = JSON.parse(this.responseText);
     if(this.status !== 404){
-      this2.responseText = responseText2['data'];
-
-
-
+      console.log(response);
     }
   }, this2);
 

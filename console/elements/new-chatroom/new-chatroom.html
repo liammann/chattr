@@ -1,0 +1,72 @@
+<dom-module id="new-chatroom">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="import" href="../site-config/site-config.html">
+
+	<link rel="import" href="../../components/polymer/polymer.html">
+	<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+	<link rel="import" href="../../components/paper-button/paper-button.html">
+	<link rel="import" href="../../components/iron-icons/iron-icons.html">
+
+<template>
+  
+<iron-ajax auto id="ajax" url="{{url}}" method="post" body="{{body}}" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
+
+
+  <h1>New Chatroom </h1>
+
+  <paper-input id="name" label="Name"></paper-input>
+
+  <template is="dom-repeat" items="{{siteConfigs}}">
+    <site-config id="{{index}}">Site Config</site-config>
+  </template>
+  
+  <paper-button on-click="newSite">New Site</paper-button>
+  <paper-button on-click="createChatroom">Create</paper-button>
+
+</template>
+
+<script>
+Polymer ({ 
+  is: "new-chatroom", 
+  properties: {
+    url : String, 
+    method : String,
+    body: String,
+  },
+  ready: function() {
+      this.siteConfigs = [1];
+      this.sites = [];
+  },
+  newSite: function(e){
+    this.push('siteConfigs', this.siteConfigs[this.siteConfigs.length-1]+1);
+  },
+  createChatroom: function(e){
+    // var array = Object.keys(document.getElementsByTagName('site-config')).map(function (key) {return document.getElementsByTagName('site-config')[key]});
+
+
+    // array.forEach(function(entry){
+    //   this.sites.push({
+    //     siteUrl: entry.children[1].children[0].children[2].children[0].children[1].value,
+    //     text: entry.children[2].children[0].children[0].children[2].children[1].children[1].value,
+    //     background: entry.children[2].children[1].children[0].children[2].children[1].children[1].value,
+    //   }); 
+ 
+    // }, this);
+    // console.log(this.sites);
+
+    this.method = "POST";
+    var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+    var USER_ID = '1'; 
+    this.url = BASE_URL+"users/"+USER_ID+"/chatrooms/"; 
+    this.body = '{"chat_room":{"name": "'+document.querySelector('#name input#input').value+'"}}';
+  },
+  responseHandler: function(e){
+    console.log(e);
+  },
+  errorHandler: function(e){
+    console.log(e);
+  }
+}); 
+
+</script>
+</dom-module>
