@@ -10,11 +10,10 @@
 	<content></content>
 
 	<paper-button on-click="removeSite" class="remove">Remove Site</paper-button>
-	<paper-input id="site-url" label="Site URL" value="{{siteUrl}}"></paper-input>
-
+	<paper-input id="site-url" auto-validate required  label="Site URL" value="{{uri}}"></paper-input>
 	<section class="colours">
-		<paper-input label="Background Colour" value="{{backgroundColor}}"><div prefix>#</div></paper-input>
-		<paper-input label="Text Colour" value="{{textColor}}"><div prefix>#</div></paper-input>
+		<paper-input pattern="[0-9a-f]*" char-counter maxlength="6" auto-validate required error-message="Invalid Colour!" label="Background Colour" value="{{bgcolour}}"><div prefix>#</div></paper-input>
+		<paper-input pattern="[0-9a-f]*" char-counter maxlength="6" auto-validate required error-message="Invalid Colour!" label="Text Colour" value="{{textcolour}}"><div prefix>#</div></paper-input>
 	</section>
 
 </template>
@@ -24,9 +23,12 @@
    is: "site-config", 
 
    properties: {
-   		siteUrl : String,
+   		uri : String,
    		backgroundColor : String, 
-   		textColor : String, 
+   		textcolour : String, 
+      bgcolour: String,
+   },
+   ready: function(){
 
    },
           

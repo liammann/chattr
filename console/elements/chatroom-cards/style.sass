@@ -1,5 +1,15 @@
 $background-color: #16a085
 
+@keyframes hide
+	0%
+		opacity: 1
+
+	95%
+		opacity: 0
+
+	100%
+		display: none
+
 
 section.chatroom-card
 	background: lighten(lightgrey,12%)
@@ -7,7 +17,13 @@ section.chatroom-card
 	width: 49%
 	margin: 0.5%
 	float: left
-	
+
+	&.hidden 
+		animation: hide 1s linear
+		-webkit-animation-fill-mode: forwards
+		-moz-animation-fill-mode: forwards
+		animation-fill-mode: forwards
+		display: none
 	p
 		margin: 0
 		padding: 5px
@@ -38,3 +54,19 @@ section.chatroom-card
 
 		&:hover 
 			background: darken($background-color,10%)
+	paper-button.red
+		margin: 1% 0
+		float: right
+		background: darken(red,8%)
+		border: 1px solid darken(red,15%)
+		color: white
+		text-align: left
+		text-decoration: none
+		padding: 5px 5px 5px 5px
+		border-radius: 2px
+		text-transform: none
+		min-width: auto
+		width: auto
+
+		&:hover 
+			background: darken(red,15%)

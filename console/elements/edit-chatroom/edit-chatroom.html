@@ -13,15 +13,13 @@
 
 
   <h1>Edit Chatroom {{uid}} </h1>
-  <content id="myContent"></content>
   <paper-input id="name" value="{{name}}" label="Name"></paper-input>
 
-  <template is="dom-repeat" items="{{siteConfigs | kick(kick) }}">
-    <site-config id="{{index}}">Site Config</site-config>
+  <template is="dom-repeat" items="{{siteConfigs}}">
+    <site-config bgcolour="{{item.bg_colour}}" textcolour="{{item.text_colour}}" uri="{{item.uri}}"  id="{{index}}"> Site Config</site-config>
   </template>
   
   <paper-button on-click="newSite">New Site</paper-button>
-  <paper-button on-click="createChatroom">Create</paper-button>
 
 </template>
 
@@ -37,28 +35,33 @@ Polymer ({
       observer: '_highlightChanged'
     }
   },
+  newSite: function(e){
+
+    this.push('siteConfigs', this.siteConfigs[this.siteConfigs.length-1]+1);
+  },
   ready: function(){
+    this.siteConfigs = [];
     this.uid = 1;
     this.method = "GET";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
 
-    this.url = BASE_URL+"users/"+USER_ID+"/chatrooms/"+this.uid; 
+    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
   },
   _highlightChanged: function(e) {
     this.name ="";
     this.method = "GET";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chatrooms/"+this.uid; 
+    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
   },
 
   responseHandler: function(e){
-    console.log(e.detail.response.data);
-    this.name = e.detail.response.data.name;
+    this.name = e.detail.response.chat_room.name;
+    this.siteConfigs = e.detail.response.chat_room.hosts;
   },
   errorHandler: function(e){
-    console.log(e);
+    console.error(e);
   }
    
 }); 

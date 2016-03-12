@@ -13,7 +13,9 @@
   <h1> Welcome</h1>
   <iron-ajax
       id="ajax"
+          auto 
           url="{{url}}"
+          method="{{method}}"
           on-response="handleResponse"
           handleAs="json">
   </iron-ajax>
@@ -22,7 +24,7 @@
 
 
   
-    <section class="chatroom-card">     
+    <section class="chatroom-card" id="{{item.id}}" >     
       <p>{{item.id}}</p>     
       <h2>{{item.name}}</h2>     
       <a href="#!/chatroom/{{item.id}}" tabindex="-1">
@@ -30,6 +32,7 @@
           <iron-icon icon="icons:settings"></iron-icon> Settings 
         </paper-button>
       </a>
+         <paper-button on-click="delete" class="red"><iron-icon icon="icons:delete"></iron-icon> </paper-button>
     </section>
   </template>
 
@@ -39,23 +42,41 @@
   Polymer ({ 
     is: "chatroom-cards", 
     properties: {
+      method: String,
       kick: {
        observer: '_highlightChanged'
       },
       url : {type: String, notify: true, reflectToAttribute: true}, 
-  },
+      data : String,
+    },
     ready: function(){
       this.kick = 0;
-  },
-
-  _highlightChanged: function(e) {
-      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/1/chatrooms/';
+      this.method = 'get';
+      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/1/chat_rooms/';
       Polymer.dom(this).node.$.ajax.generateRequest();
-  },
 
-  handleResponse: function(data){
-    this.data = data.detail.response.data;
-  }
+    },
+    delete: function(e){
+      this.method = 'delete';
+      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/1/chat_rooms/'+e.target.parentNode.parentNode.id;
+      Polymer.dom(this).node.$.ajax.generateRequest();
+      this.kick++;
+      e.target.parentNode.parentNode.className+= " hidden";
+    },
+
+    _highlightChanged: function(e) {
+      this.method = 'get';
+      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/1/chat_rooms/';
+      Polymer.dom(this).node.$.ajax.generateRequest();
+    },
+
+    handleResponse: function(data){
+      if (data.detail.response !== null){
+       this.data = data.detail.response.chat_rooms;
+
+      }
+
+    }
   }); 
 
 </script>

@@ -14,12 +14,13 @@
 
   <h1>New Chatroom </h1>
 
-  <paper-input id="name" label="Name"></paper-input>
+  <paper-input id="name" focus auto-validate required error-message="Invalid Name!" label="Name"></paper-input>
 
+  <section id="site-configs-con">
   <template is="dom-repeat" items="{{siteConfigs}}">
     <site-config id="{{index}}">Site Config</site-config>
   </template>
-  
+  </section>
   <paper-button on-click="newSite">New Site</paper-button>
   <paper-button on-click="createChatroom">Create</paper-button>
 
@@ -36,32 +37,35 @@ Polymer ({
   ready: function() {
       this.siteConfigs = [1];
       this.sites = [];
+      this.sites2 = [];
+
   },
   newSite: function(e){
+
     this.push('siteConfigs', this.siteConfigs[this.siteConfigs.length-1]+1);
   },
   createChatroom: function(e){
-    // var array = Object.keys(document.getElementsByTagName('site-config')).map(function (key) {return document.getElementsByTagName('site-config')[key]});
+    this.sites2 = [];
+    this.sites = document.querySelectorAll('#site-configs-con site-config');
 
-
-    // array.forEach(function(entry){
-    //   this.sites.push({
-    //     siteUrl: entry.children[1].children[0].children[2].children[0].children[1].value,
-    //     text: entry.children[2].children[0].children[0].children[2].children[1].children[1].value,
-    //     background: entry.children[2].children[1].children[0].children[2].children[1].children[1].value,
-    //   }); 
+    this.sites.forEach(function(entry){
+      this.sites2.push({
+        uri: entry.children[1].children[0].children[2].children[0].children[1].value,
+        text_colour: entry.children[2].children[0].children[0].children[2].children[1].children[1].value,
+        bg_colour: entry.children[2].children[1].children[0].children[2].children[1].children[1].value,
+      }); 
  
-    // }, this);
-    // console.log(this.sites);
+    }, this);
+    this.sites = this.sites2;
 
     this.method = "POST";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chatrooms/"; 
-    this.body = '{"chat_room":{"name": "'+document.querySelector('#name input#input').value+'"}}';
+    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"; 
+    this.body = '{"chat_room":{"name": "'+document.querySelector('#name input#input').value+'", "hosts":'+JSON.stringify(this.sites)+'}}';
   },
   responseHandler: function(e){
-    console.log(e);
+    // console.log(e);
   },
   errorHandler: function(e){
     console.log(e);
