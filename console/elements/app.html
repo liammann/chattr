@@ -1,15 +1,49 @@
-<link rel="stylesheet" type="text/css" href="app.css">
-<link rel="import" href="../components/polymer/polymer.html">
-<link rel="import" href="../components/iron-pages/iron-pages.html">
-
-
-
-<link rel="import" href="chatroom-cards/chatroom-cards.html">
-<link rel="import" href="new-chatroom/new-chatroom.html">
-<link rel="import" href="edit-chatroom/edit-chatroom.html">
-
-
 <dom-module id="my-app">
+	<link rel="import" href="../components/polymer/polymer.html">
+	<link rel="import" href="../components/iron-pages/iron-pages.html">
+	<link rel="import" href="chatroom-cards/chatroom-cards.html">
+	<link rel="import" href="new-chatroom/new-chatroom.html">
+	<link rel="import" href="edit-chatroom/edit-chatroom.html">
+
+<style>
+
+header {
+  background: #16a085;
+  overflow: hidden;
+  color: white; }
+  header a.logo {
+    text-decoration: none;
+    color: white;
+    float: left;
+    padding: 10px;
+    margin: 0 -10px;
+    font-size: 40px;
+    transition: all 0.2s linear; }
+    header a.logo:hover {
+      background: #107360; }
+    header a.logo span {
+      font-size: 32px;
+      color: white;
+      margin-top: -5px;
+      font-family: "Architects Daughter", cursive; }
+  header nav {
+    float: right;
+    width: 50%; }
+    header nav a {
+      text-decoration: none;
+      font-size: 20px;
+      margin: 0 5px;
+      padding: 25px;
+      color: white;
+      float: right; }
+      header nav a:hover {
+        background: #107360; }
+
+#view, .wrapper {
+  max-width: 90%;
+  margin: auto; }
+</style>
+
 <template>
 	<header>
 		<div class="wrapper">
@@ -55,7 +89,7 @@ Polymer ({
 
 var pages = document.querySelector('my-app');
 pages.route = 'home';
-page.base('/console/')
+page.base('/console/');
 
 
 // Define routes

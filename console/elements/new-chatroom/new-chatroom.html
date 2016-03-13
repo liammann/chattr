@@ -1,5 +1,4 @@
 <dom-module id="new-chatroom">
-	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="import" href="../site-config/site-config.html">
 
 	<link rel="import" href="../../components/polymer/polymer.html">
@@ -7,6 +6,14 @@
 	<link rel="import" href="../../components/paper-button/paper-button.html">
 	<link rel="import" href="../../components/iron-icons/iron-icons.html">
 
+
+<style>
+  h1 {
+  margin: 10px 0 0 0;
+  padding: 0; }
+
+  
+</style>
 <template>
   
 <iron-ajax auto id="ajax" url="{{url}}" method="post" body="{{body}}" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>

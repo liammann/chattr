@@ -1,12 +1,42 @@
 <dom-module id="site-config">
-<link rel="stylesheet" type="text/css" href="style.css">
 <link rel="import" href="../../components/polymer/polymer.html">
 <link rel="import" href="../../components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../components/paper-button/paper-button.html">
 <link rel="import" href="../../components/paper-input/paper-input.html">
 <link rel="import" href="../../components/iron-icons/iron-icons.html">
 
+<style>
+:host {
+  background: #f9f9f9;
+  overflow: hidden;
+  display: block;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px; }
+
+section.colours {
+  background: green; }
+  section.colours paper-input {
+    float: left;
+    width: 50%; }
+
+paper-button.remove {
+  background: #d60000;
+  color: white;
+  border: 1px solid #990000;
+  text-transform: capitalize;
+  float: right;
+  margin: 0px 0;
+  padding: 5px 20px;
+  font-size: 15px; }
+
+
+</style>
+
 <template>
+
+
+
 	<content></content>
 <iron-ajax auto id="ajax" url="{{url}}" method="{{method}}" body="{{body}}" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
 
@@ -67,8 +97,8 @@
   },
           
   removeSite: function(e){
+    e.target.parentElement.parentElement.removeChild(e.target.parentElement);
     if(this.auto){
-   	  e.target.parentElement.parentElement.removeChild(e.target.parentElement);
       this.method = "DELETE"; 
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
       var USER_ID = '1'; 
