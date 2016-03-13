@@ -11,7 +11,8 @@ header {
   background: #16a085;
   overflow: hidden;
   color: white; }
-  header a.logo {
+
+header a.logo {
     text-decoration: none;
     color: white;
     float: left;
@@ -19,17 +20,20 @@ header {
     margin: 0 -10px;
     font-size: 40px;
     transition: all 0.2s linear; }
-    header a.logo:hover {
+
+header a.logo:hover {
       background: #107360; }
-    header a.logo span {
-      font-size: 32px;
-      color: white;
-      margin-top: -5px;
-      font-family: "Architects Daughter", cursive; }
-  header nav {
+header a.logo span {
+	font-size: 32px;
+	color: white;
+	margin-top: -5px;
+	font-family: "Architects Daughter", cursive; 
+}
+header nav {
     float: right;
-    width: 50%; }
-    header nav a {
+    width: 50%; 
+}
+header nav a {
       text-decoration: none;
       font-size: 20px;
       margin: 0 5px;
@@ -42,6 +46,14 @@ header {
 #view, .wrapper {
   max-width: 90%;
   margin: auto; }
+</style>
+
+<style is="custom-style">
+
+#cards {
+	/*--cards-background: ;*/
+}
+
 </style>
 
 <template>
@@ -57,7 +69,7 @@ header {
 
 	<iron-pages change="{{change}}" selected="{{route}}" attr-for-selected="data-route" fit>
 		<section class="wrapper" data-route="home">
-			<chatroom-cards kick="{{kick}}"></chatroom-cards>
+			<chatroom-cards id="cards" kick="{{kick}}"></chatroom-cards>
 		</section>
 		<section class="wrapper" data-route="new">
 		  	<new-chatroom></new-chatroom>

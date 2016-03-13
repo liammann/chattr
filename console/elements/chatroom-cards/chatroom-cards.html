@@ -20,16 +20,20 @@
 
 section.chatroom-card {
   background: #f2f2f2;
+    background: var(--cards-background, #f2f2f2);
+
   border: 1px solid #d6d6d6;
   width: 49%;
   margin: 0.5%;
-  float: left; }
+  float: left; 
+}
   section.chatroom-card.hidden {
     animation: hide 1s linear;
     -webkit-animation-fill-mode: forwards;
     -moz-animation-fill-mode: forwards;
     animation-fill-mode: forwards;
-    display: none; }
+    display: none; 
+  }
   section.chatroom-card p {
     margin: 0;
     padding: 5px;
@@ -43,7 +47,9 @@ section.chatroom-card {
     color: #262626; }
   section.chatroom-card > a {
     margin: 0;
-    padding: 0; }
+    padding: 0; 
+
+  }
   section.chatroom-card paper-button.green {
     margin: 1%;
     float: right;
@@ -54,9 +60,11 @@ section.chatroom-card {
     text-decoration: none;
     padding: 5px 10px 5px 5px;
     border-radius: 2px;
-    text-transform: none; }
-    section.chatroom-card paper-button.green:hover {
-      background: #107360; }
+    text-transform: none; 
+  }
+  section.chatroom-card paper-button.green:hover {
+    background: #107360; 
+  }
   section.chatroom-card paper-button.red {
     margin: 1% 0;
     float: right;
@@ -69,9 +77,11 @@ section.chatroom-card {
     border-radius: 2px;
     text-transform: none;
     min-width: 0px;
-    width: auto; }
-    section.chatroom-card paper-button.red:hover {
-      background: #b30000; }
+    width: auto; 
+  }
+  section.chatroom-card paper-button.red:hover {
+    background: #b30000; 
+  }
 
 
 </style>
@@ -108,7 +118,7 @@ section.chatroom-card {
     properties: {
       method: String,
       kick: {
-       observer: '_highlightChanged'
+       observer: '_changed'
       },
       url : {type: String, notify: true, reflectToAttribute: true}, 
       data : String,
@@ -128,7 +138,7 @@ section.chatroom-card {
       e.target.parentNode.parentNode.className+= " hidden";
     },
 
-    _highlightChanged: function(e) {
+    _changed: function(e) {
       this.method = 'get';
       this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/1/chat_rooms/';
       Polymer.dom(this).node.$.ajax.generateRequest();
