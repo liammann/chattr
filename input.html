@@ -1,27 +1,27 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta chartset="utf-8" />
-		<script type="text/javascript">
+  <head>
+    <meta chartset="utf-8" />
+    <script type="text/javascript">
     // var ws = new WebSocket("ws://localhost:4000/socket/websocket");
     var ws = new WebSocket("ws://salty-taiga-73405.herokuapp.com/socket/websocket");
 
-		function WebSocketSetup(chat)
-		{
-			ws.onopen = function() {
+    function WebSocketSetup(chat)
+    {
+      ws.onopen = function() {
         var data = {
           topic: "rooms:lobby",
           event: "phx_join",
           payload: {
-            user: msg
+            user: message
           },
           ref: 1
         };
 
         ws.send(JSON.stringify(data));
-			};
+      };
 
-			ws.onmessage = function (evt) {
+      ws.onmessage = function (evt) {
         data = JSON.parse(evt.data);
 
         switch (data.event) {
@@ -38,7 +38,7 @@
 
           case "phx_error": //?
             break;
-          case "new:msg":
+          case "new:message":
             console.log(data.payload);
             publishMessage(chat, data.payload);
             break;
@@ -46,21 +46,30 @@
             console.log("Missed: " + data.event);
             // user leave chat?
         }
-			};
+      };
 
-			ws.onclose = function() {
+      ws.onclose = function() {
         chat.innerHTML += "<br />User left chat...";
-			};
-		}
+      };
+    }
 
-    function sendMessage(msg)
+    function sendMessage(message)
     {
-      var data = {
+      var longitude, latitude, data;
+
+      // navigator.geolocation.getCurrentPosition(function (position) {
+      //   longitude = position.coords.longitude;
+      //   latitude = position.coords.latitude;
+      //   console.log(longitude, latitude);
+      // });
+
+      data = {
         topic: "rooms:lobby",
-        event: "new:msg",
+        event: "new:message",
         payload: {
-          user: 1,
-          msg: msg
+          user_id: 1,
+          chat_room_id: 11,
+          message: message
         },
         ref: 1
       };
@@ -70,27 +79,27 @@
 
     function publishMessage(chat, payload)
     {
-      chat.innerHTML += "<br />" + payload.user + ": " + payload.body;
+      chat.innerHTML += "<br />" + payload.user_id + ": " + payload.body;
     }
 
     window.addEventListener('load', function(e) {
       var chat = document.getElementById('chat'),
-          msg = document.getElementById('msg');
+          message = document.getElementById('message');
 
       WebSocketSetup(chat);
 
-      msg.addEventListener('keyup', function (e) {
+      message.addEventListener('keyup', function (e) {
         if (e.keyCode == 13) {
-          sendMessage(msg.value);
-          msg.value = '';
+          sendMessage(message.value);
+          message.value = '';
         }
       });
     });
-		</script>
-	</head>
-	<body>
+    </script>
+  </head>
+  <body>
     <div id="chat">
     </div>
-    <input type="text" id="msg" autocomplete="off" />
-	</body>
+    <input type="text" id="message" autocomplete="off" />
+  </body>
 </html>

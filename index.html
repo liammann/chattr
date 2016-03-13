@@ -2,24 +2,44 @@
 <html>
    <head>
    <link rel="stylesheet" type="text/css" href="style.css">
+   <script src="phoenix.js"></script>
 
    </head>
    <body>
 
+<div id="messages"></div>
+<input id="input" type="text">
 
 
-   <div class="chat">
+<script type="text/javascript">
+var socket = new Phoenix.Socket("ws://salty-taiga-73405.herokuapp.com/socket/websocket");
+socket.connect({user_id: "1"});
 
-   <div class="messages">
-     <p>Hello</p>
+let chan = socket.chan("rooms:lobby", { token: 'roomToken'});
 
-   </div>
+chan.join()
+   .receive("ok", () => console.log("Joined") )
+   .receive("error", ({reason}) => console.log("failed join", reason) )
+   .after(10000, () => console.log("Networking issue. Still waiting...") );
 
-<footer>
-<button>Txt</button>
-   <input type="text" />
-   </div>
-</footer>
+
+$('#input').keypress(function (e) {
+   if (e.which == 13) {
+      var payload = {user_id: 1, chat_room_id: 11, message: e.target.value};
+      chan.push("new:message", payload)
+         .receive("ok", (message) => console.log("created message", message) )
+         .receive("error", (reasons) => console.log("create failed", reasons) )
+         .after(10000, () => console.log("Message Creation : Networking issue. Still waiting...") );
+         return false;    //<---- Add this line
+   }
+});
+
+chan.on("new:message", msg => {
+   $('#messages').append("<p>"+msg.body+"</p>");
+   console.warn(msg);
+});
+
+</script>
       
    </body>
 </html>
