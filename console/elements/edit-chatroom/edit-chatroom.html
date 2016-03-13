@@ -42,7 +42,7 @@ Polymer ({
     body: {type: Array, notify: true, reflectToAttribute: true},
     name: {type: String, notify: true, reflectToAttribute: true},
     uid: {
-      observer: '_highlightChanged'
+      observer: '_changed'
     }
   },
 
@@ -51,28 +51,30 @@ Polymer ({
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
     this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid+"/hosts"; 
-    var deflt = {"bg_colour": "fff", "text_colour": "000", "uri": "example.com"};
+    var deflt = {"bg_colour": "fff", "text_colour": "000", "uri": "example.com", "chat_room_id": this.uid};
     this.body = '{"host": ' + JSON.stringify(deflt) + '}';
-    this.push('siteConfigs',  deflt );
   },
   ready: function(){
     this.siteConfigs = [];
-    this.uid = 1;
+    this.uid = null;
     this.method = "GET";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
+    if(this.uid !== null){
+      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
+    }
   },
 
-  _highlightChanged: function(e) {
+  _changed: function(e) {
     this.name ="";
     this.method = "GET";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
+    if(this.uid !== null){
+      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
+    }
   },
   _nameChanged: function(e) {
-    this.name ="";
     this.method = "PATCH";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
@@ -82,8 +84,15 @@ Polymer ({
   },
 
   responseHandler: function(e){
-    this.name = e.detail.response.chat_room.name;
-    this.siteConfigs = e.detail.response.chat_room.hosts;
+
+    if(e.detail.response.chat_room !== undefined){
+      this.name = e.detail.response.chat_room.name;
+      this.siteConfigs = e.detail.response.chat_room.hosts.reverse();
+    } else {
+      this.push('siteConfigs',  e.detail.response.host);
+
+
+    }
   },
   errorHandler: function(e){
     console.error(e);

@@ -52,22 +52,23 @@ Polymer ({
   createChatroom: function(e){
     this.sites2 = [];
     this.sites = document.querySelectorAll('#site-configs-con site-config');
-
-    this.sites.forEach(function(entry){
+    
+    [].forEach.call(this.sites, function (entry) {
       this.sites2.push({
-        uri: entry.children[1].children[0].children[2].children[0].children[1].value,
-        text_colour: entry.children[2].children[0].children[0].children[2].children[1].children[1].value,
-        bg_colour: entry.children[2].children[1].children[0].children[2].children[1].children[1].value,
+        uri: entry.children[2].value,
+        text_colour: entry.children[3].children[1].value,
+        bg_colour: entry.children[3].children[0].value,
       }); 
  
     }, this);
     this.sites = this.sites2;
-
+    console.log(this.sites);
+    
     this.method = "POST";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
     this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"; 
-    this.body = '{"chat_room":{"name": "'+document.querySelector('#name input#input').value+'", "hosts":'+JSON.stringify(this.sites)+'}}';
+    this.body = '{"chat_room":{"name": "'+document.querySelector('#name input#input').value+'"}, "hosts":'+JSON.stringify(this.sites)+'}';
   },
   responseHandler: function(e){
     // console.log(e);
