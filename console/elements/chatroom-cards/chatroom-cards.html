@@ -1,6 +1,7 @@
 
 
 <dom-module id="chatroom-cards">
+<link rel="import" href="../shared-styles/shared-styles.html">
 
 <link rel="import" href="../../components/polymer/polymer.html">
 <link rel="import" href="../../components/iron-ajax/iron-ajax.html">
@@ -82,6 +83,16 @@ section.chatroom-card {
   section.chatroom-card paper-button.red:hover {
     background: #b30000; 
   }
+paper-button.btn {
+  padding: 8px 8px 4px 8px;
+  font-size: 12px;
+  margin: 10px 10px 10px 0px;
+  float: right;
+}
+paper-button.btn iron-icon{
+  width: 20px;
+  margin-top: -2px; 
+}
 
 
 </style>
@@ -101,12 +112,12 @@ section.chatroom-card {
     <section class="chatroom-card" id="{{item.id}}" >     
       <p>{{item.id}}</p>     
       <h2>{{item.name}}</h2>     
+        <paper-button href="new" class="btn sub">
       <a href="#!/chatroom/{{item.id}}" tabindex="-1">
-        <paper-button href="new" class="green">
           <iron-icon icon="icons:settings"></iron-icon> Settings 
-        </paper-button>
       </a>
-         <paper-button on-click="delete" class="red"><iron-icon icon="icons:delete"></iron-icon> </paper-button>
+        </paper-button>
+         <paper-button on-click="delete" class="btn remove"><iron-icon icon="icons:delete"></iron-icon> Delete </paper-button>
     </section>
   </template>
 
@@ -132,7 +143,7 @@ section.chatroom-card {
     },
     delete: function(e){
       this.method = 'delete';
-      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/1/chat_rooms/'+e.target.parentNode.parentNode.id;
+      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/1/chat_rooms/'+e.target.parentNode.id;
       Polymer.dom(this).node.$.ajax.generateRequest();
       this.kick++;
       e.target.parentNode.parentNode.className+= " hidden";

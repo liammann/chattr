@@ -1,6 +1,7 @@
 <dom-module id="edit-chatroom" >
 
 
+<link rel="import" href="../shared-styles/shared-styles.html">
 
 	<link rel="import" href="../site-config/site-config.html">
 
@@ -29,7 +30,7 @@ h1 {
     <site-config chatroom="{{item.chat_room_id}}" uid="{{item.id}}" bgcolour="{{item.bg_colour}}"  textcolour="{{item.text_colour}}" uri="{{item.uri}}"  id="{{index}}" auto> Site Config</site-config>
   </template>
   
-  <paper-button on-click="newSite">New Site</paper-button>
+  <paper-button class="btn" on-click="newSite"> <iron-icon icon="icons:add"></iron-icon> New Site</paper-button>
 
 </template>
 

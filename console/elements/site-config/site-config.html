@@ -1,5 +1,6 @@
 <dom-module id="site-config">
 <link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
 <link rel="import" href="../../components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../components/paper-button/paper-button.html">
 <link rel="import" href="../../components/paper-input/paper-input.html">
@@ -20,15 +21,6 @@ section.colours {
     float: left;
     width: 50%; }
 
-paper-button.remove {
-  background: #d60000;
-  color: white;
-  border: 1px solid #990000;
-  text-transform: capitalize;
-  float: right;
-  margin: 0px 0;
-  padding: 5px 20px;
-  font-size: 15px; }
 
 
 </style>
@@ -40,7 +32,7 @@ paper-button.remove {
 	<content></content>
 <iron-ajax auto id="ajax" url="{{url}}" method="{{method}}" body="{{body}}" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
 
-	<paper-button on-click="removeSite" class="remove">Remove Site</paper-button>
+	<paper-button on-click="removeSite" class="btn remove remove-site">Remove Site</paper-button>
 	<paper-input on-change="_uriChanged" id="site-url" auto-validate required  label="Site URL" value="{{uri}}"></paper-input>
 	<section class="colours">
 		<paper-input on-change="_bgChanged" pattern="[0-9a-f]*" char-counter maxlength="6" auto-validate required error-message="Invalid Colour!" label="Background Colour" value="{{bgcolour}}"><div prefix>#</div></paper-input>

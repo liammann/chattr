@@ -1,5 +1,6 @@
 <dom-module id="new-chatroom">
 	<link rel="import" href="../site-config/site-config.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
 
 	<link rel="import" href="../../components/polymer/polymer.html">
 	<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
@@ -11,8 +12,7 @@
   h1 {
   margin: 10px 0 0 0;
   padding: 0; }
-
-  
+ 
 </style>
 <template>
   
@@ -28,8 +28,8 @@
     <site-config id="{{index}}">Site Config</site-config>
   </template>
   </section>
-  <paper-button on-click="newSite">New Site</paper-button>
-  <paper-button on-click="createChatroom">Create</paper-button>
+  <paper-button class="btn" on-click="newSite"><iron-icon icon="icons:add"></iron-icon> New Site</paper-button>
+  <paper-button class="btn sub" on-click="createChatroom">Create</paper-button>
 
 </template>
 
@@ -62,8 +62,7 @@ Polymer ({
  
     }, this);
     this.sites = this.sites2;
-    console.log(this.sites);
-    
+
     this.method = "POST";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     var USER_ID = '1'; 
