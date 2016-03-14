@@ -32,15 +32,24 @@ body {background: grey;font-family: sans-serif;}
    margin: 0;
    padding: 0;
 }
-#messages section button {
+#messages section a {
+  padding: 3px;
+  margin: 3px;
    float: right;
 }
 .hidden {
    display: none !important;
 
 }
-.edit {
-  background: yellow;
+@keyframes yellow-an {
+    0% {background-color: white;}
+    20% {background-color: yellow;}
+    80% {background-color: yellow;}
+    100% {background: white;}
+}
+.edited-an {
+  animation-name: yellow-an;
+  animation-duration: 5s;
 }
 </style>
 
@@ -77,10 +86,61 @@ function gotoBottom(id){
    var element = document.getElementById(id);
    element.scrollTop = element.scrollHeight - element.clientHeight;
 }
+
+function deleteMessageEvt(e){
+
+  var payload = {user_id: 1, chat_room_id: 11, id: e.parentNode.id};
+  chan.push("message:delete", payload)
+    .receive("ok", (message) => console.log("delete message", message) )
+    .receive("error", (reasons) => console.log("create failed", reasons) )
+    .after(10000, () => console.log("Message Creation : Networking issue. Still waiting...") );
+    e.parentNode.className = "hidden";
+    return false;
+}
+function editMessage(e){
+  var input = document.createElement('input');
+  var parent = document.getElementById(e.parentNode.id);
+  input.value = parent.children[4].innerHTML;
+  parent.children[4].className = "hidden";
+  e.parentNode.appendChild(input);
+  input.addEventListener("keypress", function (e) {
+    if (e.which == 13) {
+      var payload = {user_id: 1, chat_room_id: 11, id: parent.id, message: e.target.value};
+      chan.push("message:edit", payload)
+        .receive("ok", (message) => console.log("edit message", message) )
+        .receive("phx_error", (reasons) => console.log("edit failed", reasons) )
+        .after(10000, () => console.log("Message Edit : Networking issue. Still waiting...") );
+        $('#input').val("");
+        return false; 
+
+    }
+  });
+}
+
 function formatMessage(id, avatar, message, username){
   var node = document.createElement('section');
+  var btn = document.createElement('a');
+  btn.innerHTML = "x";
+  btn.setAttribute('href', "javascript:;");
+  btn.className = "btn-delete";
+  var btn2 = document.createElement('a');
+  btn2.innerHTML = "edit";
+  btn2.setAttribute('href', "javascript:;");
+  btn2.className = "btn-edit";  
   node.id = id;
-  node.innerHTML = "<img src='"+avatar+"'> <button>X</button><span>"+username+"</span> <p>"+message+"</p>";
+  node.innerHTML = "<img src='"+avatar+"'>"; 
+  node.appendChild(btn);
+  node.appendChild(btn2);
+  node.addEventListener("click", function (e) {
+    if(e.target.className === "btn-delete"){
+      deleteMessageEvt(e.target);
+    } else if(e.target.className === "btn-edit"){
+      editMessage(e.target);
+  }
+
+});
+
+  node.innerHTML += "<span>"+username+"</span> <p>"+message+"</p>";
   return node;
 }
 
@@ -90,23 +150,18 @@ function appendMessage(id, data, user) {
 }
 
 function changeMessage(id, data, user){
-  document.querySelector('section#'+id).innerHTML = formatMessage(id, 'http://cdn.libravatar.org/avatar/', data, user).innerHTML;
-  document.querySelector('section#'+id).className += "edited";
+  document.getElementById(id).innerHTML = formatMessage(id, 'http://cdn.libravatar.org/avatar/', data, user).innerHTML;
+  document.getElementById(id).className = "edited-an";
 
+}
+function deleteMessage(id){
+  console.log( id);
+  document.getElementById(id).className = "hidden";
 }
 
 function displayOldMessages(data){
    [].forEach.call(data, function (entry) {
       appendMessage(entry.id, entry.message, entry.user_id);
-   });
-   var buttons = document.querySelectorAll('#messages button');
-
-   [].forEach.call(buttons, function(btn) {
-     // do whatever
-     btn.addEventListener('click', function(e){
-         e.target.parentNode.className = "hidden";
-         dataAPI('delete','https://salty-taiga-73405.herokuapp.com/api/v1/messages/'+e.target.parentNode.id, null, function () {}, null);
-     });
    });
 }
 
@@ -121,34 +176,21 @@ let chan = socket.chan("rooms:lobby", { token: 'roomToken'});
 
 chan.join()
    .receive("ok", () => console.log("Joined") )
-   .receive("error", ({reason}) => console.log("failed join", reason) )
+   .receive("phx_error", ({reason}) => console.log("failed join", reason) )
    .after(10000, () => console.log("Networking issue. Still waiting...") );
 
-
-// $('#input').keypress(function (e) {
-//    if (e.which == 13) {
-//       var payload = {user_id: 1, chat_room_id: 11, id: 108, message: e.target.value};
-//       chan.push("message:new", payload)
-//          .receive("ok", (message) => console.log("new message", message) )
-//          .receive("error", (reasons) => console.log("create failed", reasons) )
-//          .after(10000, () => console.log("Message Creation : Networking issue. Still waiting...") );
-//          $('#input').val("");
-//          return false;    //<---- Add this line
-//    }
-// });
 
 $('#input').keypress(function (e) {
    if (e.which == 13) {
       var payload = {user_id: 1, chat_room_id: 11, id: 108, message: e.target.value};
-      chan.push("message:edit", payload)
-         .receive("ok", (message) => console.log("edit message", message) )
-         .receive("error", (reasons) => console.log("edit failed", reasons) )
-         .after(10000, () => console.log("Message Edit : Networking issue. Still waiting...") );
+      chan.push("message:new", payload)
+         .receive("ok", (message) => console.log("new message", message) )
+         .receive("error", (reasons) => console.log("create failed", reasons) )
+         .after(10000, () => console.log("Message Creation : Networking issue. Still waiting...") );
          $('#input').val("");
          return false;    //<---- Add this line
    }
 });
-
 
 chan.on("message:new", msg => {
   appendMessage(null, msg.body);
@@ -156,7 +198,11 @@ chan.on("message:new", msg => {
 
 chan.on("message:edit", msg => {
   console.warn(msg);
-  changeMessage(msg.message_id, msg.body, 1);
+  changeMessage(msg.message_id, msg.message, msg.user_id);
+});
+chan.on("message:delete", msg => {
+  console.warn(msg);
+  deleteMessage(msg.message_id);
 });
 
 
