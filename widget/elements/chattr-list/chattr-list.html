@@ -1,0 +1,159 @@
+
+
+<dom-module id="chattr-list">
+>
+<link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../components/paper-input/paper-input.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../chattr-message/chattr-message.html">
+<link rel="import" href="../../components/iron-scroll-target-behavior/iron-scroll-target-behavior.html">
+
+
+<link rel="import" href="../phoenix-socket/phoenix-socket.html">
+
+
+
+<style>
+.hidden {
+    display: none;
+}
+#region {
+	overflow: auto;
+	margin: 0;
+	background: white;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 70px;
+    display: block;
+}
+
+paper-input {
+    display: block;
+	background: lightgrey;
+	padding: 0 10px 10px 10px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    display: block;
+    height: 70px;
+
+}
+</style>
+<template>
+
+<iron-ajax auto id="ajax" url="{{url}}" method="Get" body="" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
+<phoenix-socket chatroomid="{{chatroomid}}" id="socket" userid="{{userid}}" message="{{messageInput}}"></phoenix-socket>
+    <div id="region">
+        <x-scrollable scroll-target="region">
+    	   <template is="dom-repeat" id="resultList" items="{{messages}}">
+    	       <chattr-message username="{{item.user_id}}" id="{{item.message_id}}" uid="{{item.message_id}}">{{item.message}}</chattr-message>   
+    	   </template>
+        </x-scrollable>
+    </div>
+    <paper-input on-change="sendMessage"></paper-input>
+</template>
+<script>
+Polymer ({ 
+	is: "chattr-list", 
+ 	 properties: {
+        // chatroomId: String,
+		url : {type: String, notify: true, reflectToAttribute: true}, 
+		method : {type: String, notify: true, reflectToAttribute: true},
+		body: {type: Array, notify: true, reflectToAttribute: true},
+        messages: {
+            type: Array,
+            notify: true,
+            reflectToAttribute: true
+        },
+        chatroomid: {
+            type: String,
+            notify: true,
+            reflectToAttribute: true
+        },
+        userid: {
+            type: String,
+            notify: true,
+            reflectToAttribute: true
+        }
+    }, 
+    listeners: {
+        'msg-received': '_addMessage',
+        'msg-change': '_changeMessage',
+        'msg-delete': '_deleteMessage',
+        'msg-new-edit': '_newEditMessage',
+        'msg-successful-edit': '_successfulEditMessage',
+        'msg-new-delete': '_newDeleteMessage',
+        'msg-successful-delete': '_successfulDeleteMessage',
+    },
+    ready: function(e){
+
+		var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
+    	var USER_ID = this.userId; 
+    	this.url = BASE_URL+"messages?chat_room_id="+this.chatroomid;
+    },
+    show: function (index) {
+        return this.messages[index] !== undefined;
+    },
+    responseHandler: function(e){
+    	var messages = e.detail.response.messages;
+        [].forEach.call(messages , function (item, i, arr) {
+            messages[i].message_id = item.id;
+        });
+        this.messages = messages;
+    	this.scrollToBottom();
+    },
+    scrollToBottom: function(){
+        Polymer.dom.flush();
+        this.async(function(){
+                 this.$.region.scroll(0,this.$.region.scrollHeight - this.$.region.clientHeight);
+        },1);
+    },
+    sendMessage: function(e){
+    	this.messageInput = e.target.value;
+    	e.target.value = "";
+    },
+    findById: function (source, id) {
+        for (var i = 0; i < source.length; i++) {
+            if (source[i].message_id === id) {
+                return i;
+            }
+        }
+        throw "Couldn't find object with id: " + id;
+    },
+    _addMessage:function(e){
+    	this.push('messages',  {"user_id":e.detail.msg.user_id,"message":e.detail.msg.message,"longitude":null,"location":null,"latitude":null,"message_id":e.detail.msg.message_id,"chat_room_id":this.chatroomId});
+        this.scrollToBottom();
+    },
+    _changeMessage: function(e){
+        var result = this.findById( this.messages, e.detail.msg.message_id );
+        var newMessage = this.messages[result];
+        newMessage.message = e.detail.msg.message;
+        var selector2 = 'messages'+result+'message';
+        this.set('messages.'+result+'.message' , e.detail.msg.message) 
+    },
+    _deleteMessage: function(e){
+        var result = this.findById( this.messages, e.detail.msg.message_id );
+        Polymer.dom(this).node.$.region.children[0].children[result].remove();
+    },
+    _newEditMessage: function(e){
+        Polymer.dom(this).node.$.socket.newEditMessage(e.detail);
+    },
+    _successfulEditMessage: function(e){
+        var result = this.findById( this.messages, e.detail.msg.message_id );
+        Polymer.dom(this).node.$.region.children[0].children[result].successfulEditMessage(e.detail);
+    },
+    _newDeleteMessage: function(e){
+        Polymer.dom(this).node.$.socket.newDeleteMessage(e.detail);
+    },
+    _successfulDeleteMessage: function(e){
+        // all ready called from remove event from web socket
+    }
+    
+});
+
+</script>
+</dom-module>

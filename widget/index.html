@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <script src="components/webcomponentsjs/webcomponents-lite.js"></script>
+  <title>Polymer Chattr Widget</title>
+  <style>
+@import url(https://fonts.googleapis.com/css?family=Architects+Daughter);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+  *:hover, *:before:hover, *:after:hover {
+    transition: all 0.2s linear; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f8f3c4;
+  font-family: "Open Sans", sans-serif; 
+}
+chattr-widget {
+  margin: 40px;
+  display: block;
+  box-shadow: 1px 1px 20px 2px rgba(0,0,0,0.5);
+  border: 2px solid rgb(211, 211, 211);
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 300px;
+  margin: 10vh auto;
+  height: 50vh;
+
+}
+
+  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="import" href="elements/chattr-widget/chattr-widget.html">
+</head>
+<body>
+
+<chattr-widget  userid="1" chatroomid="10"></chattr-widget>
+
+
+
+
+</body>
+</html>

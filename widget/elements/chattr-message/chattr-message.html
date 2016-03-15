@@ -1,0 +1,132 @@
+<dom-module id="chattr-message">
+<link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/paper-input/paper-input.html">
+
+<style>
+
+:host {
+    max-width: 100%;
+    box-sizing: border-box; 
+    padding: 20px 10px 10px 10px;
+    margin: 10px 10px;
+    display: block;
+    border-top: 1px solid lightgrey;
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+h2 {
+    font-size: 12px;
+    margin-bottom:5px 
+}
+p {
+    font-size: 18px;
+    clear: right;
+}
+span {
+    font-size: 10px;
+}
+paper-button {
+    float: right;
+    padding: 1px 3px;
+    margin: -1px 2px 0 5px;
+    min-width: 20px;
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    border: 1px solid #ccc;
+    text-transform: capitalize;
+}
+paper-button:hover {
+    background: black;
+    border-color: black;
+    color: white;
+}
+
+paper-input {
+    margin: -20px 0 0 0;
+    padding: 0;
+}
+.hidden {
+    display: none;
+}
+.deleting{
+    opacity: 0.5;
+}
+
+--paper-input-container: {
+    margin: 0;
+    padding: 0px;
+}
+
+</style>
+
+
+<template>
+
+<paper-button on-click="deleteMessage">X</paper-button>
+<paper-button on-click="editMessageBtn">Edit</paper-button>
+<h2>Username: {{username}}</h2>
+<p id="content"><content></content></p>
+<paper-input value="{{newContent}}" on-change="editMessage" id="edit" class="hidden"></paper-input>
+<!-- <span>{{uid}}</span> -->
+
+
+</template>
+
+<script>
+Polymer ({ 
+	is: "chattr-message", 
+    properties: {
+		message : {type: String, notify: true, reflectToAttribute: true}, 
+		uid : String,
+		username: {type: Array, notify: true, reflectToAttribute: true},
+        newContent: String,
+    }, 
+    ready: function(e){
+        this.newContent = this.$.content.innerHTML;	
+    },
+    remove: function(e){
+        this.parentNode.removeChild(this);
+    },
+    editMessageBtn: function(e){
+        this.$.edit.classList.remove("hidden");
+        this.$.content.classList.add("hidden");
+        this.newContent = this.$.content.innerHTML;
+    },
+    deleteMessage: function(e){
+        var parent = e.target.parentNode;
+        this.fire("msg-new-delete", {
+                message_id: parent.id,
+                user_id: parent.username
+        });    
+    },
+    editMessage:function(e){
+        var parent = e.target.parentNode.parentNode.parentNode.parentNode.parentNode;
+        this.fire("msg-new-edit", {
+                message: e.target.value,
+                message_id: parent.id,
+                user_id: parent.username
+        });
+    },
+    successfulEditMessage: function(e){
+        this.$.edit.classList.add("hidden");
+        this.$.content.classList.remove("hidden");
+    },
+    successfulDeleteMessage: function(e){
+        console.warn(e);
+        this.parentNode.removeChild(this);
+        // this.$.content.classList.remove("hidden");
+    },
+
+});
+
+
+
+
+
+</script>
+</dom-module>

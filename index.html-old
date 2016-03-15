@@ -1,0 +1,214 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+   <link rel="stylesheet" type="text/css" href="style.css">
+   <script src="phoenix.js"></script>
+
+<style>
+body {background: grey;font-family: sans-serif;}
+#messages {
+   background: white;
+   height: 300px;
+   width: 500px;
+   overflow-y: scroll;
+}
+#messages section {
+   margin: 5px;
+   padding: 10px;
+   border-top: 1px solid lightgrey;
+}
+#messages section img {
+   border-radius: 50%;
+   max-width: 40px;
+   margin: 0 10px 0 0;
+   float: left;
+}
+
+#messages section span {
+   font-size: 11px;
+}
+#messages section p {
+   font-size: 14px;
+   margin: 0;
+   padding: 0;
+}
+#messages section a {
+  padding: 3px;
+  margin: 3px;
+   float: right;
+}
+.hidden {
+   display: none !important;
+
+}
+@keyframes yellow-an {
+    0% {background-color: white;}
+    20% {background-color: yellow;}
+    80% {background-color: yellow;}
+    100% {background: white;}
+}
+.edited-an {
+  animation-name: yellow-an;
+  animation-duration: 5s;
+}
+</style>
+
+   </head>
+   <body>
+
+<div id="messages"></div>
+<input id="input" type="text">
+
+
+<script type="text/javascript">
+
+
+function xhrSuccess () { this.callback.apply(this, this.arguments); }
+
+function xhrError () { }
+
+function dataAPI (method, sURL, data, fCallback, arguments1) {
+  var oReq = new XMLHttpRequest();
+  oReq.callback = fCallback;
+  oReq.arguments = Array.prototype.slice.call(arguments, 3);
+  oReq.onload = xhrSuccess;
+  oReq.onerror = xhrError;
+  oReq.open(method, ""+sURL, true);
+  oReq.send(data);
+}
+
+var responseText;
+dataAPI('GET','https://salty-taiga-73405.herokuapp.com/api/v1/messages?chat_room_id=11', null, function () {
+      displayOldMessages(JSON.parse(this.responseText).messages);
+}, null);
+
+function gotoBottom(id){
+   var element = document.getElementById(id);
+   element.scrollTop = element.scrollHeight - element.clientHeight;
+}
+
+function deleteMessageEvt(e){
+
+  var payload = {user_id: 1, chat_room_id: 11, id: e.parentNode.id};
+  chan.push("message:delete", payload)
+    .receive("ok", (message) => console.log("delete message", message) )
+    .receive("error", (reasons) => console.log("create failed", reasons) )
+    .after(10000, () => console.log("Message Creation : Networking issue. Still waiting...") );
+    e.parentNode.className = "hidden";
+    return false;
+}
+function editMessage(e){
+  var input = document.createElement('input');
+  var parent = document.getElementById(e.parentNode.id);
+  input.value = parent.children[4].innerHTML;
+  parent.children[4].className = "hidden";
+  e.parentNode.appendChild(input);
+  input.addEventListener("keypress", function (e) {
+    if (e.which == 13) {
+      var payload = {user_id: 1, chat_room_id: 11, id: parent.id, message: e.target.value};
+      chan.push("message:edit", payload)
+        .receive("ok", (message) => console.log("edit message", message) )
+        .receive("phx_error", (reasons) => console.log("edit failed", reasons) )
+        .after(10000, () => console.log("Message Edit : Networking issue. Still waiting...") );
+        $('#input').val("");
+        return false; 
+
+    }
+  });
+}
+
+function formatMessage(id, avatar, message, username){
+  var node = document.createElement('section');
+  var btn = document.createElement('a');
+  btn.innerHTML = "x";
+  btn.setAttribute('href', "javascript:;");
+  btn.className = "btn-delete";
+  var btn2 = document.createElement('a');
+  btn2.innerHTML = "edit";
+  btn2.setAttribute('href', "javascript:;");
+  btn2.className = "btn-edit";  
+  node.id = id;
+  node.innerHTML = "<img src='"+avatar+"'>"; 
+  node.appendChild(btn);
+  node.appendChild(btn2);
+  node.addEventListener("click", function (e) {
+    if(e.target.className === "btn-delete"){
+      deleteMessageEvt(e.target);
+    } else if(e.target.className === "btn-edit"){
+      editMessage(e.target);
+  }
+
+});
+
+  node.innerHTML += "<span>"+username+"</span> <p>"+message+"</p>";
+  return node;
+}
+
+function appendMessage(id, data, user) {
+  document.getElementById('messages').appendChild(formatMessage(id, 'http://cdn.libravatar.org/avatar/', data, user));
+  gotoBottom('messages');
+}
+
+function changeMessage(id, data, user){
+  document.getElementById(id).innerHTML = "";
+  document.getElementById(id).innerHTML = formatMessage(id, 'http://cdn.libravatar.org/avatar/', data, user).innerHTML;
+  document.getElementById(id).className = "edited-an";
+
+}
+function deleteMessage(id){
+  console.log( id);
+  document.getElementById(id).className = "hidden";
+}
+
+function displayOldMessages(data){
+   [].forEach.call(data, function (entry) {
+      appendMessage(entry.id, entry.message, entry.user_id);
+   });
+}
+
+
+
+
+
+var socket = new Phoenix.Socket("ws://salty-taiga-73405.herokuapp.com/socket/websocket");
+socket.connect({user_id: "1"});
+
+let chan = socket.chan("rooms:lobby", { token: 'roomToken'});
+
+chan.join()
+   .receive("ok", () => console.log("Joined") )
+   .receive("phx_error", ({reason}) => console.log("failed join", reason) )
+   .after(10000, () => console.log("Networking issue. Still waiting...") );
+
+
+$('#input').keypress(function (e) {
+   if (e.which == 13) {
+      var payload = {user_id: 1, chat_room_id: 11, id: 108, message: e.target.value};
+      chan.push("message:new", payload)
+         .receive("ok", (message) => console.log("new message", message) )
+         .receive("error", (reasons) => console.log("create failed", reasons) )
+         .after(10000, () => console.log("Message Creation : Networking issue. Still waiting...") );
+         $('#input').val("");
+         return false;    //<---- Add this line
+   }
+});
+
+chan.on("message:new", msg => {
+  console.log(msg);
+  appendMessage(null, msg.message);
+});
+
+chan.on("message:edit", msg => {
+  console.warn(msg);
+  changeMessage(msg.message_id, msg.message, msg.user_id);
+});
+chan.on("message:delete", msg => {
+  console.warn(msg);
+  deleteMessage(msg.message_id);
+});
+
+
+</script>
+      
+   </body>
+</html>

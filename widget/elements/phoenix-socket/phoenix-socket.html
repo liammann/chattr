@@ -1,0 +1,83 @@
+<dom-module id="phoenix-socket">
+    <link rel="import" href="../../components/polymer/polymer.html">
+    <script src="phoenix.js"></script>
+
+<template></template>
+
+<script>
+Polymer ({ 
+	is: "phoenix-socket", 
+    properties: {
+        socket: String,
+        chan: Object,  
+        message: {
+            type: String,
+            observer: '_newMessageSend'
+        },    
+        chatroomid: {
+            type: String,
+            reflectToAttribute: true,
+        },
+        userid: {
+            type: String,
+            reflectToAttribute: true,
+        }
+    }, 
+    ready: function(e){
+        // this.userid2 = 1;
+        // this.chatroomid2 = 10;
+        console.log(this.userid);
+        this.socket = new Phoenix.Socket("ws://salty-taiga-73405.herokuapp.com/socket/websocket");
+        this.socket.connect({user_id: this.userid});
+        this.chan = this.socket.chan("rooms:"+this.chatroomid, { token: 'roomToken', user_id: this.userid} );
+        this.chan.join()
+            .receive("ok", (message) => console.log("Joined", message) )
+            .receive("phx_error", ({reason}) => console.error("failed join", reason) )
+            .after(10000, () => console.error("Networking issue. Still waiting...") );
+        this.chan.on("message:new", msg => {
+            this.fire('msg-received', {
+                msg: msg 
+            });
+        });
+        this.chan.on("message:edit", msg => {
+            this.fire("msg-change", {
+                msg: msg
+            });
+        });
+        this.chan.on("message:delete", msg => {
+            this.fire("msg-delete", {
+                msg: msg
+            });
+        });
+        this.chan.on("user:joined", msg => {
+            console.warn(msg);
+        });
+
+    },
+    _newMessageSend: function(){
+        var payload = {user_id: this.userid, chat_room_id: this.chatroomid, message: this.message};
+        this.chan.push("message:new", payload)
+            .receive("ok", (message) => console.log("new message", message) )
+            .receive("error", (reasons) => console.error("create failed", reasons) )
+            .after(10000, () => console.error("Message Creation : Networking issue. Still waiting...") );
+    },
+    newEditMessage: function(e){
+        var payload = {user_id: this.userid, chat_room_id: this.chatroomid, id: e.message_id, message: e.message};
+        this.chan.push("message:edit", payload)
+            .receive("ok", (message) => {this.fire("msg-successful-edit", {msg: message}); })
+            .receive("phx_error", (reasons) => console.error("edit failed", reasons) )
+            .after(10000, () => console.error("Message Edit : Networking issue. Still waiting...") );
+    },
+    newDeleteMessage: function(e){
+        var payload = {user_id: this.userid, chat_room_id: this.chatroomid, id: e.message_id};
+        this.chan.push("message:delete", payload)
+            .receive("ok", (message) => {this.fire("msg-successful-delete", {msg: message})})
+            .receive("error", (reasons) => console.log("create failed", reasons) )
+            .after(10000, () => console.log("Message Creation : Networking issue. Still waiting...") );
+    }
+});
+
+
+
+</script>
+</dom-module>
