@@ -4,9 +4,29 @@
 	<link rel="import" href="chatroom-cards/chatroom-cards.html">
 	<link rel="import" href="new-chatroom/new-chatroom.html">
 	<link rel="import" href="edit-chatroom/edit-chatroom.html">
+  	<link rel="import" href="login/login.html">
 
 <style>
+.login {
+	background: #16a085;
+	height: 100vh;
+	text-align: center;
+}
 
+.login p.logo {
+    text-decoration: none;
+    color: white;
+    margin: 0px;
+    padding: 35vh 0 50px 0;
+    font-size: 60px;
+    transition: all 0.2s linear; }
+
+.login p.logo span {
+	font-size: 52px;
+	color: white;
+	margin-top: -5px;
+	font-family: "Architects Daughter", cursive; 
+}
 header {
   background: #16a085;
   overflow: hidden;
@@ -33,6 +53,37 @@ header nav {
     float: right;
     width: 50%; 
 }
+header nav p {
+	background: rgba(0,0,0,0.15);
+	float: right;
+	margin: 0;
+	padding: 15px 20px 1px 10px;
+}
+
+header nav p span, 
+header nav p a {
+	width: 100%;
+	display: inline-block;
+	font-size: 11px;
+	margin: 0;
+	padding: 0;
+}
+header nav p span {
+	font-size: 16px;
+	text-align: right;
+	padding: 0 0 5px 0;
+	float: left;
+	border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+header nav p a {
+	text-align: right;
+	width: auto;
+	padding: 5px;
+	border-radius: 3px;
+	margin: 5px;
+}
+
+ 
 header nav a {
       text-decoration: none;
       font-size: 20px;
@@ -46,6 +97,22 @@ header nav a {
 #view, .wrapper {
   max-width: 90%;
   margin: auto; }
+
+  #signout {
+  	margin: 10vh auto;
+  	padding: 5% 10%;
+  	width: auto;
+  	border: 1px solid lightgrey;
+  	border-radius: 10px;
+  	font-size: 22px;
+  	text-align: center;
+}
+  	 #signout chattr-login {
+  		margin: auto;
+  		display: block;
+
+  	}
+ 
 </style>
 
 <style is="custom-style">
@@ -57,27 +124,45 @@ header nav a {
 </style>
 
 <template>
-	<header>
-		<div class="wrapper">
-			<a class="logo" href="#!/">Chattr |<span> Mangement Console</span></a>
-			<nav>
-				<a href="/console/#!/new">New Chatroom</a>
-				<a href="">My Home</a>
-			</nav>
-		</div>
-	</header>
+    <template is="dom-if" if="{{!loggedinaccess}}">
+    <section class="login">
+    	<p class="logo" href="#!/">Chattr |<span> Mangement Console</span></p>
 
-	<iron-pages change="{{change}}" selected="{{route}}" attr-for-selected="data-route" fit>
-		<section class="wrapper" data-route="home">
-			<chatroom-cards id="cards" kick="{{kick}}"></chatroom-cards>
-		</section>
-		<section class="wrapper" data-route="new">
-		  	<new-chatroom></new-chatroom>
-		</section>
-		<section class="wrapper" id="edit" data-route="edit">
-		  	<edit-chatroom uid="{{uid}}" >{{uid}}</edit-chatroom>
-		</section>
-	</iron-pages>
+		<chattr-login userid="{{userid}}" loggedin="{{loggedin}}"></chattr-login>
+	</section>
+	</template>
+
+    <template is="dom-if" if="{{loggedinaccess}}">
+
+		<header>
+			<div class="wrapper">
+				<a class="logo" href="#!/">Chattr |<span> Mangement Console</span></a>
+				<nav>
+					<p>
+						<span>Username: {{userid}}</span><a class="username" href="/console/#!/signout">Sign Out</a>
+					</p>
+					<a href="/console/#!/new">New Chatroom</a>
+					<a href="">My Home</a>
+				</nav>
+			</div>
+		</header>
+		<iron-pages change="{{change}}" selected="{{route}}" attr-for-selected="data-route" fit>
+			<section class="wrapper" data-route="home">
+				<chatroom-cards userid="{{userid}}" id="cards" kick="{{kick}}"></chatroom-cards>
+			</section>
+			<section class="wrapper" data-route="new">
+			  	<new-chatroom userid="{{userid}}"></new-chatroom>
+			</section>
+			<section class="wrapper" id="edit" data-route="edit">
+			  	<edit-chatroom userid="{{userid}}" uid="{{uid}}" >{{uid}}</edit-chatroom>
+			</section>
+			<section class="wrapper" id="signout" data-route="signout">
+				<h1>You are currently signed in as {{userid}}</h1>
+				<chattr-login userid="{{userid}}" loggedin="{{loggedin}}"></chattr-login>
+			</section>
+		</iron-pages>
+	
+	</template>
 
 </template>
 
@@ -88,12 +173,22 @@ Polymer ({
     properties: {
 		route: String,
 		uid: String,
-		kick: String
+		kick: String,
+		userid: {type: String},
+		loggedin: {type: Boolean, observer: "_loggedInChange"}
     },
     ready: function(){
 		this.uid= null;
 		this.kick=0;
+		this.loggedin = false;
 		// console.log(this.$.edit.parentNode);
+    	// console.log(this.userid);
+
+    },
+    _loggedInChange: function(e){
+    	console.log("logged", this.loggedin);
+    	this.loggedinaccess = this.loggedin;
+    	this.route = 'home';
 
     }
 
@@ -117,6 +212,10 @@ page('/', function() {
 
 page('/new', function() {
   pages.route = 'new';
+});	
+
+page('/signout', function() {
+  pages.route = 'signout';
 });	
 page('/chatroom/:id', function(e) {
 	var uid = e.params.id;
