@@ -1,18 +1,11 @@
-
-
 <dom-module id="chattr-list">
->
-<link rel="import" href="../../components/polymer/polymer.html">
-<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../components/paper-input/paper-input.html">
-<link rel="import" href="../../components/paper-button/paper-button.html">
-<link rel="import" href="../chattr-message/chattr-message.html">
-<link rel="import" href="../../components/iron-scroll-target-behavior/iron-scroll-target-behavior.html">
-
-
-<link rel="import" href="../phoenix-socket/phoenix-socket.html">
-
-
+    <link rel="import" href="../../components/polymer/polymer.html">
+    <link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+    <link rel="import" href="../../components/paper-input/paper-input.html">
+    <link rel="import" href="../../components/paper-button/paper-button.html">
+    <link rel="import" href="../chattr-message/chattr-message.html">
+    <link rel="import" href="../../components/iron-scroll-target-behavior/iron-scroll-target-behavior.html">
+    <link rel="import" href="../phoenix-socket/phoenix-socket.html">
 
 <style>
 .hidden {
@@ -32,7 +25,12 @@
 
 paper-input {
     display: block;
-	background: lightgrey;
+    --paper-input-container-color: var(--my-header-color);
+    --paper-input-container-focus-color: var(--my-header-color);
+    --paper-input-container-invalid-color: var(--my-header-color);
+    --paper-input-container-input-color: var(--my-header-color);
+
+	background: var(--my-background-color);
 	padding: 0 10px 10px 10px;
     position: absolute;
     left: 0px;
@@ -40,25 +38,26 @@ paper-input {
     bottom: 0px;
     display: block;
     height: 70px;
-
 }
+
+
 .typing {
     background: url(typing.gif) no-repeat -15px -3px;
-
+    opacity: 0.7;
     background-color: #e6e6e6;
     padding: 10px 10px  10px 50px;
     font-size: 9px;
 }
 </style>
 <template>
-
 <iron-ajax auto id="ajax" url="{{url}}" method="Get" body="" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
 <phoenix-socket chatroomid="{{chatroomid}}" id="socket" userid="{{userid}}" message="{{messageInput}}"></phoenix-socket>
     <div id="region">
         <x-scrollable scroll-target="region">
     	   <template is="dom-repeat" id="resultList" items="{{messages}}">
-    	       <chattr-message username="{{item.user_id}}" id="{{item.message_id}}" uid="{{item.message_id}}">{{item.message}}</chattr-message>   
+    	       <chattr-message me="{{compare(item.user_id)}}" username="{{item.user_id}}" id="{{item.message_id}}" uid="{{item.message_id}}">{{item.message}}</chattr-message>   
     	   </template>
+
             <template is="dom-repeat" id="resultList" items="{{usersTyping}}">
                 <p class="typing"><strong> {{item.username}} </strong> is typing</p>
            </template>        
@@ -122,6 +121,10 @@ Polymer ({
     show: function (index) {
         return this.messages[index] !== undefined;
     },
+    compare: function (user_id) {
+        console.log(this.userid);
+        return parseInt(user_id) === parseInt(this.userid);
+    },
     responseHandler: function(e){
     	var messages = e.detail.response.messages;
         [].forEach.call(messages , function (item, i, arr) {
@@ -161,10 +164,10 @@ Polymer ({
     _typingEvent: function(e){
 
         if(e.detail.start){
-            // if(e.detail.msg.user.id !== parseInt(this.userid)){
+            if(e.detail.msg.user.id !== parseInt(this.userid)){
                 this.push('usersTyping', {"username": e.detail.msg.user.name});
                 this.scrollToBottom();
-            // }
+            }
         } else {
             this.usersTyping = [];
         }

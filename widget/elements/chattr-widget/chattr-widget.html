@@ -2,7 +2,11 @@
 <link rel="import" href="../../components/polymer/polymer.html">
 <link rel="import" href="../../components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../chattr-list/chattr-list.html">
+
+<link rel="import" href="../../components/paper-button/paper-button.html">
+<link rel="import" href="../../components/iron-icons/iron-icons.html">
 <link rel="import" href="../../components/iron-scroll-target-behavior/iron-scroll-target-behavior.html">
+    <link rel="import" href="../login/login.html">
 
 <style>
 @import url(https://fonts.googleapis.com/css?family=Architects+Daughter);
@@ -11,36 +15,165 @@
 
 <style is="custom-style">
 
-* {
-	/*--cards-background: ;*/
+:host {
+  --my-background-color: rgb(50,50,50);
+  --my-header-color: orange;
+  --my-text-color: orange;
+
+  font-family: "Open Sans", sans-serif; 
+  display: block;
+  overflow: hidden;
+  max-width: 300px;
+  height: 350px;
+  position: relative;
+}
+
+:host, :host * {
+  box-sizing: border-box; 
 }
 chattr-list {
     display: block;
     position: relative;
-    height: 100%;
+    height: 87%;
+    clear: both;
+}
+header {
+  float: left;
+  height: 13%;
+  width: 100%;
+  padding: 2%;
+  background: var(--my-background-color);
+  color: var(--my-header-color);
+}
+header h1{
+  padding: 0;
+  margin: 0;
+  float: left;
+  font-size: 24px;
+  padding: 3px;
+}
+header paper-button{
+  float: right;
+  text-align: center;
+  padding: 5px;
+  min-width: auto;
+  margin: 0px;
 }
 
-:host, :host * {
-  box-sizing: border-box; }
-:host {
-font-family: "Open Sans", sans-serif; 
+
+@keyframes slide {
+    0% { left: 110%; }
+    100% { left: 10%; }
+}
+@keyframes slideout {
+    0% { left: 10%; }
+    100% { left: 110%; }
+}
+
+.display {
   display: block;
-  overflow: hidden;
-  max-width: 300px;
-  height: 250px;
-
+  animation: slide 0.5s forwards;
+  animation-delay: 0.2s;
 }
+.hide {
+  animation: slideout 0.5s forwards;
+  animation-delay: 0.2s;
+}
+.hidden {
+  display: none;
+}
+
+#userpanel {
+  position: absolute;
+  top: 0%;
+  bottom: 0%;
+  right: 0px;
+  left: 110%;
+  width: 90%;
+  padding: 10px 20px;
+  float: right;
+  overflow: hidden;
+  display: block;
+  background: #fafafa;
+  box-shadow: 0 0 15px 5px rgba(0,0,0,0.5);
+  z-index: 999;
+  text-align: center;
+}
+#userpanel p{
+  float: left;
+  width: 100%;
+  line-height: 22px;
+  font-style: 24px;
+  clear: both;
+}
+#userpanel paper-button {
+  width: 10%;
+  margin-right: 90%;
+  clear: both;
+  margin-bottom: 20px;
+  margin-left: -5px;
+  padding: 5px;
+  min-width: 20%;
+  border: 1px solid lightgrey;
+}
+#userpanel chattr-login {
+  clear: both;
+}
+#login.hidden {
+  opacity: 1;
+}
+#login {
+  position: relative;
+  top: 0;
+  left: 0;
+  bottom:0;
+  right: 0;
+  height: 100%;
+  padding: 80px 20px;
+  background: white;
+  text-align: center;
+  opacity: 0.71;
+  background: var(--my-background-color);
+  color: var(--my-header-color);
+
+  transition: all linear 0.5s;
+}
+#login:hover{
+  opacity: 1;
+}
+
+#login .logo {
+  font-size: 32px;
+}
+
 </style>
 
 <template>
 
-<iron-ajax auto id="ajax" url="{{url}}" method="Get" body="" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
 
+  <template is="dom-if" if="{{!loggedinaccess}}">
+    <section id="login" >
+      <p class="logo" href="#!/">Chattr</p>
 
-<chattr-list userid="{{userid}}" chatroomid="{{chatroomid}}"></chattr-list>
+      <chattr-login loginusername="{{username}}" userid="{{userid}}" loggedin="{{loggedin}}"></chattr-login>
+    </section>
+  </template>
+  <template is="dom-if" if="{{loggedinaccess}}">
 
+  <header> <h1>Chattr</h1>
+    <paper-button on-click="openUser" class="btn"><iron-icon icon="icons:perm-identity"></iron-icon></paper-button>
 
+  </header>
 
+    <div id="userpanel" class$="{{loginPanel}}">
+      <paper-button on-click="closeUser" class="btn"><iron-icon icon="icons:close"></iron-icon></paper-button>
+      <p>Currently logged in as <br><strong>{{username}}</strong> </p>
+      <chattr-login loginusername="{{username}}" userid="{{userid}}" loggedin="{{loggedin}}"></chattr-login>
+    </div>
+
+    <chattr-list id="thing" userid="{{userid}}" chatroomid="{{chatroomid}}"></chattr-list>
+
+  </template>
 
 </template>
 
@@ -48,9 +181,31 @@ font-family: "Open Sans", sans-serif;
 Polymer ({ 
 	is: "chattr-widget",
 
-    // properties: {
-    //     chatroomId: String, 
-    // }
+  properties: {
+    loginPanel: String,
+    userid: {type: String, notify: true, reflectToAttribute: true},
+    username: {type: String, notify: true, reflectToAttribute: true},
+    loggedin: {type: Boolean, observer: "_loggedInChange"}
+    },
+    ready: function(){
+      this.loggedinaccess = false;
+      this.loggedin = false;
+
+    },
+    _loggedInChange: function(e){
+      console.log("userid", this.userid);
+      this.loggedinaccess = this.loggedin;
+      this.loginPanel = " hidden";
+      
+
+    }, 
+    openUser:function(e){
+      this.loginPanel = "display";
+    },
+    closeUser:function(e){
+      this.loginPanel = "hide";
+    }
+
 
 });
 

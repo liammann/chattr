@@ -50,7 +50,7 @@ Polymer ({
             });
         });
         this.chan.on("user:joined", msg => {
-            console.warn("user joined",msg);
+            // console.warn("user joined",msg);
         });
         this.chan.on("user:typing:start", msg => {
             this.fire("typing-start", {

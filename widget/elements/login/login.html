@@ -1,0 +1,68 @@
+<dom-module id="chattr-login">
+<link rel="import" href="../../components/polymer/polymer.html">
+<link rel="import" href="../../components/google-signin/google-signin.html">
+<link rel="import" href="../../components/iron-ajax/iron-ajax.html">
+
+
+
+<template>
+
+  <iron-ajax
+      id="ajax"
+          auto 
+          url="{{url}}"
+          method="post"
+          on-response="handleResponse"
+          on-error="handleError"
+          body="{{body}}" handle-as="json" content-type="application/json">
+
+  </iron-ajax>
+
+<google-signin brand="google" client-id="{{clientid}}"></google-signin>
+
+    <google-signin-aware
+        scopes=""
+        is-authorized="{{isAuthorized}}"
+        on-google-signin-aware-success="handleSignIn"
+        on-google-signin-aware-signed-out="handleSignOut"></google-signin-aware>
+
+</template>
+
+<script>
+Polymer ({ 
+	is: "chattr-login",
+
+  properties: {
+    userName: String, 
+    isAuthorized: Boolean,
+    url: String,
+    body: String, 
+    client_id: String,
+    userid : {type: String, notify: true, reflectToAttribute: true}, 
+    loginusername : {type: String, notify: true, reflectToAttribute: true}, 
+    loggedin: {type: Boolean, notify: true, reflectToAttribute: true}
+  },
+  ready: function(e){
+    this.clientid = '25828217282-9v2cmq2bim4majeiu5go70h7amo95vim.apps.googleusercontent.com';
+  },
+  handleSignIn: function(e){
+    this.userName = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getName();
+    this.url = "https://salty-taiga-73405.herokuapp.com/api/v1/users?authenticator=google";
+    this.body = {token: gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token};
+  },
+  handleSignOut: function(e){
+    this.loggedin = false;
+  },
+  handleResponse: function(data){
+    this.userid = data.detail.response.user.id;
+    this.loginusername = data.detail.response.user.name;
+    this.loggedin = true;
+  },
+  handleError: function(e){
+    this.userid = null;
+  }
+});
+
+
+</script>
+</dom-module>
