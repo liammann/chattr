@@ -128,7 +128,7 @@ header nav a {
     <section class="login">
     	<p class="logo" href="#!/">Chattr |<span> Mangement Console</span></p>
 
-		<chattr-login userid="{{userid}}" loggedin="{{loggedin}}"></chattr-login>
+		<chattr-login loginusername="{{username}}" userid="{{userid}}" loggedin="{{loggedin}}"></chattr-login>
 	</section>
 	</template>
 
@@ -139,7 +139,7 @@ header nav a {
 				<a class="logo" href="#!/">Chattr |<span> Mangement Console</span></a>
 				<nav>
 					<p>
-						<span>Username: {{userid}}</span><a class="username" href="/console/#!/signout">Sign Out</a>
+						<span>{{userid}}: {{username}}</span><a class="username" href="/console/#!/signout">Sign Out</a>
 					</p>
 					<a href="/console/#!/new">New Chatroom</a>
 					<a href="">My Home</a>
@@ -157,7 +157,7 @@ header nav a {
 			  	<edit-chatroom userid="{{userid}}" uid="{{uid}}" >{{uid}}</edit-chatroom>
 			</section>
 			<section class="wrapper" id="signout" data-route="signout">
-				<h1>You are currently signed in as {{userid}}</h1>
+				<h1>You are currently signed in as {{username}}</h1>
 				<chattr-login userid="{{userid}}" loggedin="{{loggedin}}"></chattr-login>
 			</section>
 		</iron-pages>
@@ -175,21 +175,18 @@ Polymer ({
 		uid: String,
 		kick: String,
 		userid: {type: String},
+		username: {type: String},
 		loggedin: {type: Boolean, observer: "_loggedInChange"}
     },
     ready: function(){
 		this.uid= null;
 		this.kick=0;
 		this.loggedin = false;
-		// console.log(this.$.edit.parentNode);
-    	// console.log(this.userid);
 
     },
     _loggedInChange: function(e){
-    	console.log("logged", this.loggedin);
     	this.loggedinaccess = this.loggedin;
     	this.route = 'home';
-
     }
 
 });
@@ -202,16 +199,14 @@ page.base('/console/');
 // Define routes
 page('/', function() {
 	pages.kick++;
-
 	pages.addEventListener('iron-select', function(e) {
 		pages.kick++;
 	});  
-
 	pages.route = 'home';
 });	
 
 page('/new', function() {
-  pages.route = 'new';
+  	pages.route = 'new';
 });	
 
 page('/signout', function() {

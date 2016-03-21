@@ -40,29 +40,28 @@ Polymer ({
     body: String, 
     client_id: String,
     userid : {type: String, notify: true, reflectToAttribute: true}, 
+    loginusername : {type: String, notify: true, reflectToAttribute: true}, 
     loggedin: {type: Boolean, notify: true, reflectToAttribute: true}
   },
   ready: function(e){
     this.clientid = '25828217282-9v2cmq2bim4majeiu5go70h7amo95vim.apps.googleusercontent.com';
   },
   handleSignIn: function(e){
-    console.log(gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse());
+
     this.userName = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getName();
     this.url = "https://salty-taiga-73405.herokuapp.com/api/v1/users?authenticator=google";
     this.body = {token: gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token};
   },
   handleSignOut: function(e){
-    console.log(e);
     this.loggedin = false;
   },
-  handleResponse: function(e){
-    console.warn(e);
-    this.userid = 117445029675636091079;
+  handleResponse: function(data){
+    this.userid = data.detail.response.user.id;
+    this.loginusername = data.detail.response.user.name;
 
   },
   handleError: function(e){
-    this.userid = 117445029675636091079;
-    // console.log(this.userid);
+    this.userid = null;
   }
 });
 

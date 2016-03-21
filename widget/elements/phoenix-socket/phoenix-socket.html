@@ -31,7 +31,7 @@ Polymer ({
         this.socket.connect({user_id: this.userid});
         this.chan = this.socket.chan("rooms:"+this.chatroomid, { token: 'roomToken', user_id: this.userid} );
         this.chan.join()
-            .receive("ok", (message) => console.log("Joined", message) )
+            .receive("ok", (message) => console.log("Joined") )
             .receive("phx_error", ({reason}) => console.error("failed join", reason) )
             .after(10000, () => console.error("Networking issue. Still waiting...") );
         this.chan.on("message:new", msg => {
@@ -50,9 +50,35 @@ Polymer ({
             });
         });
         this.chan.on("user:joined", msg => {
-            console.warn(msg);
+            console.warn("user joined",msg);
+        });
+        this.chan.on("user:typing:start", msg => {
+            this.fire("typing-start", {
+                start: true,
+                msg: msg
+            });
+        });
+        this.chan.on("user:typing:stop", msg => {
+            this.fire("typing-stop", {
+                start: false,
+                msg: msg
+            });
         });
 
+    },
+    newUserTyping: function(userid){
+        var payload = {user_id: userid};
+        this.chan.push("user:typing:start", payload)
+            .receive("ok", (message) => console.log("user typing", message) )
+            .receive("phx_error", (reasons) => console.error("typing failed", reasons) )
+            .after(10000, () => console.error("User Typing : Networking issue. Still waiting...") );
+    },
+    newUserStopTyping: function(userid){
+        var payload = {user_id: userid};
+        this.chan.push("user:typing:stop", payload)
+            .receive("ok", (message) => {console.log("user stop", message);} )
+            .receive("phx_error", (reasons) => console.error("typing failed", reasons) )
+            .after(10000, () => console.error("User Typing : Networking issue. Still waiting...") );
     },
     _newMessageSend: function(){
         var payload = {user_id: this.userid, chat_room_id: this.chatroomid, message: this.message};
@@ -61,6 +87,7 @@ Polymer ({
             .receive("error", (reasons) => console.error("create failed", reasons) )
             .after(10000, () => console.error("Message Creation : Networking issue. Still waiting...") );
     },
+
     newEditMessage: function(e){
         var payload = {user_id: this.userid, chat_room_id: this.chatroomid, id: e.message_id, message: e.message};
         this.chan.push("message:edit", payload)

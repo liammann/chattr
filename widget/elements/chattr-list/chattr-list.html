@@ -42,6 +42,13 @@ paper-input {
     height: 70px;
 
 }
+.typing {
+    background: url(typing.gif) no-repeat -15px -3px;
+
+    background-color: #e6e6e6;
+    padding: 10px 10px  10px 50px;
+    font-size: 9px;
+}
 </style>
 <template>
 
@@ -52,9 +59,12 @@ paper-input {
     	   <template is="dom-repeat" id="resultList" items="{{messages}}">
     	       <chattr-message username="{{item.user_id}}" id="{{item.message_id}}" uid="{{item.message_id}}">{{item.message}}</chattr-message>   
     	   </template>
+            <template is="dom-repeat" id="resultList" items="{{usersTyping}}">
+                <p class="typing"><strong> {{item.username}} </strong> is typing</p>
+           </template>        
         </x-scrollable>
     </div>
-    <paper-input on-change="sendMessage"></paper-input>
+    <paper-input on-keyup="typingMessage"></paper-input>
 </template>
 <script>
 Polymer ({ 
@@ -69,6 +79,11 @@ Polymer ({
             notify: true,
             reflectToAttribute: true
         },
+        usersTyping: {
+            type: Array,
+            notify: true,
+            reflectToAttribute: true
+        },
         chatroomid: {
             type: String,
             notify: true,
@@ -78,7 +93,14 @@ Polymer ({
             type: String,
             notify: true,
             reflectToAttribute: true
-        }
+        },
+        typing: {
+            type: Boolean,
+            notify: true,
+            observer: '_typing'
+
+        },
+        typingUsername: String
     }, 
     listeners: {
         'msg-received': '_addMessage',
@@ -88,9 +110,11 @@ Polymer ({
         'msg-successful-edit': '_successfulEditMessage',
         'msg-new-delete': '_newDeleteMessage',
         'msg-successful-delete': '_successfulDeleteMessage',
+        'typing-start': '_typingEvent',
+        'typing-stop': '_typingEvent',
     },
     ready: function(e){
-
+        this.usersTyping = [];
 		var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     	var USER_ID = this.userId; 
     	this.url = BASE_URL+"messages?chat_room_id="+this.chatroomid;
@@ -112,9 +136,38 @@ Polymer ({
                  this.$.region.scroll(0,this.$.region.scrollHeight - this.$.region.clientHeight);
         },1);
     },
-    sendMessage: function(e){
-    	this.messageInput = e.target.value;
-    	e.target.value = "";
+    typingMessage: function(e){
+        if (e.keyCode === 13 && e.target.value === "") {
+            this.typing = false;
+        } else if (e.keyCode === 13 && e.target.value !== "") {
+            this.messageInput = e.target.value;
+            this.typing = false;
+            e.target.value = "";
+        } else if(e.target.value === ""){
+            this.typing = false;
+        } else {
+            this.typing = true;
+
+        }
+            
+    },
+    _typing:function(){
+        if(this.typing){
+            Polymer.dom(this).node.$.socket.newUserTyping(this.userid);
+        }else{
+            Polymer.dom(this).node.$.socket.newUserStopTyping(this.userid);
+        }
+    },
+    _typingEvent: function(e){
+
+        if(e.detail.start){
+            // if(e.detail.msg.user.id !== parseInt(this.userid)){
+                this.push('usersTyping', {"username": e.detail.msg.user.name});
+                this.scrollToBottom();
+            // }
+        } else {
+            this.usersTyping = [];
+        }
     },
     findById: function (source, id) {
         for (var i = 0; i < source.length; i++) {
