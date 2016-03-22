@@ -62,7 +62,7 @@ section.colours {
       this.method = "PATCH";
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
       var USER_ID = '1'; 
-      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
+      this.url = BASE_URL+"chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
       this.body = '{"host":{ "uri":"'+this.uri+'"}}';
     }
   },
@@ -71,7 +71,7 @@ section.colours {
       this.method = "PATCH";
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
       var USER_ID = '1'; 
-      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
+      this.url = BASE_URL+"chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
       this.body = '{"host":{ "bg_colour":"'+this.bgcolour+'"}}';
     }
    },
@@ -80,7 +80,7 @@ section.colours {
       this.method = "PATCH";
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
       var USER_ID = '1'; 
-      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
+      this.url = BASE_URL+"chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
       this.body = '{"host":{ "text_colour":"'+this.textcolour+'"}}';
     }
     
@@ -93,7 +93,7 @@ section.colours {
       this.method = "DELETE"; 
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
       var USER_ID = '1'; 
-      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
+      this.url = BASE_URL+"chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
       this.body = '';
     }
   },  

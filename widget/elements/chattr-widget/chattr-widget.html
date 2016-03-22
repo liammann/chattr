@@ -6,19 +6,23 @@
 <link rel="import" href="../../components/paper-button/paper-button.html">
 <link rel="import" href="../../components/iron-icons/iron-icons.html">
 <link rel="import" href="../../components/iron-scroll-target-behavior/iron-scroll-target-behavior.html">
-    <link rel="import" href="../login/login.html">
+    <link rel="import" href="../chattr-login/chattr-login.html">
 
 <style>
 @import url(https://fonts.googleapis.com/css?family=Architects+Daughter);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 </style>
 
+
+
+<template>
+
 <style is="custom-style">
 
 :host {
   --my-background-color: rgb(50,50,50);
-  --my-header-color: orange;
-  --my-text-color: orange;
+  --my-header-color: white;
+  --my-text-color: white;
 
   font-family: "Open Sans", sans-serif; 
   display: block;
@@ -148,8 +152,7 @@ header paper-button{
 
 </style>
 
-<template>
-
+<iron-ajax auto id="ajax" url="{{url}}" method="Get" body="" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
 
   <template is="dom-if" if="{{!loggedinaccess}}">
     <section id="login" >
@@ -182,33 +185,40 @@ Polymer ({
 	is: "chattr-widget",
 
   properties: {
+    url : {type: String, notify: true, reflectToAttribute: true}, 
     loginPanel: String,
     userid: {type: String, notify: true, reflectToAttribute: true},
     username: {type: String, notify: true, reflectToAttribute: true},
     loggedin: {type: Boolean, observer: "_loggedInChange"}
     },
     ready: function(){
+      console.log(this.updateStyles);
       this.loggedinaccess = false;
       this.loggedin = false;
-
+      this.url = "https://salty-taiga-73405.herokuapp.com/api/v1/chat_rooms/"+this.chatroomid;
     },
     _loggedInChange: function(e){
-      console.log("userid", this.userid);
+      // console.log("userid", this.userid);
       this.loggedinaccess = this.loggedin;
       this.loginPanel = " hidden";
-      
-
     }, 
     openUser:function(e){
       this.loginPanel = "display";
     },
     closeUser:function(e){
       this.loginPanel = "hide";
-    }
-
-
+    },
+    responseHandler: function(e){
+      var data = e.detail.response.chat_room.hosts;
+      for (var i = data.length - 1; i >= 0; i--) {
+        if(data[i].uri === window.location.host){
+          this.customStyle['--my-background-color'] = "#"+data[i].bg_colour;
+          this.customStyle['--my-header-color'] = "#"+data[i].text_colour;
+          this.customStyle['--my-text-color'] = "#"+data[i].text_colour;
+        }
+      }
+      this.updateStyles();
+    },
 });
-
-
 </script>
 </dom-module>

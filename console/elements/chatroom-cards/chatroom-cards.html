@@ -141,20 +141,20 @@ paper-button.btn iron-icon{
       this.kick = 0;
       this.method = 'get';
       if(this.userid !== undefined){
-        this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/'+this.userid+'/chat_rooms/';
+        this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/chat_rooms?users_id='+this.userid;
       }
       Polymer.dom(this).node.$.ajax.generateRequest();
 
     },
     _changedId: function(){
       // console.log(this.userid);
-      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/'+this.userid+'/chat_rooms/';
+      this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/chat_rooms/';
       Polymer.dom(this).node.$.ajax.generateRequest();
     },
     delete: function(e){
       this.method = 'delete';
       if(this.userid !== undefined){
-        this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/'+this.userid+'/chat_rooms/'+e.target.parentNode.id;
+        this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/chat_rooms/'+e.target.parentNode.id;
       }
       Polymer.dom(this).node.$.ajax.generateRequest();
       this.kick++;
@@ -164,7 +164,7 @@ paper-button.btn iron-icon{
     _changed: function(e) {
       this.method = 'get';
       if(this.userid !== undefined){
-        this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/users/'+this.userid+'/chat_rooms/';
+        this.url = 'https://salty-taiga-73405.herokuapp.com/api/v1/chat_rooms/';
       }
       Polymer.dom(this).node.$.ajax.generateRequest();
     },

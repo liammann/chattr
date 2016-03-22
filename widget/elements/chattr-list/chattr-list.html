@@ -55,7 +55,7 @@ paper-input {
     <div id="region">
         <x-scrollable scroll-target="region">
     	   <template is="dom-repeat" id="resultList" items="{{messages}}">
-    	       <chattr-message me="{{compare(item.user_id)}}" username="{{item.user_id}}" id="{{item.message_id}}" uid="{{item.message_id}}">{{item.message}}</chattr-message>   
+    	       <chattr-message me="{{compare(item.user_id)}}" username="{{item.user.name}}" id="{{item.message_id}}" uid="{{item.message_id}}">{{item.message}}</chattr-message>   
     	   </template>
 
             <template is="dom-repeat" id="resultList" items="{{usersTyping}}">

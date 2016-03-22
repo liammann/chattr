@@ -50,8 +50,7 @@ Polymer ({
   newSite: function(e){
     this.method = "POST";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid+"/hosts"; 
+    this.url = BASE_URL+"chat_rooms/"+this.uid+"/hosts"; 
     var deflt = {"bg_colour": "fff", "text_colour": "000", "uri": "example.com", "chat_room_id": this.uid};
     this.body = '{"host": ' + JSON.stringify(deflt) + '}';
   },
@@ -60,9 +59,8 @@ Polymer ({
     this.uid = null;
     this.method = "GET";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
     if(this.uid !== null){
-      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
+      this.url = BASE_URL+"chat_rooms/"+this.uid; 
     }
   },
 
@@ -70,22 +68,19 @@ Polymer ({
     this.name ="";
     this.method = "GET";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
     if(this.uid !== null){
-      this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
+      this.url = BASE_URL+"chat_rooms/"+this.uid; 
     }
   },
   _nameChanged: function(e) {
     this.method = "PATCH";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"+this.uid; 
+    this.url = BASE_URL+"chat_rooms/"+this.uid; 
     this.body = '{"chat_room":{ "name":"'+this.name+'"}}';
 
   },
 
   responseHandler: function(e){
-
     if(e.detail.response.chat_room !== undefined){
       this.name = e.detail.response.chat_room.name;
       this.siteConfigs = e.detail.response.chat_room.hosts.reverse();

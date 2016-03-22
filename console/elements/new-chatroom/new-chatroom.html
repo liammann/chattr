@@ -65,9 +65,9 @@ Polymer ({
 
     this.method = "POST";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-    var USER_ID = '1'; 
-    this.url = BASE_URL+"users/"+USER_ID+"/chat_rooms/"; 
-    this.body = '{"chat_room":{"name": "'+document.querySelector('#name input#input').value+'"}, "hosts":'+JSON.stringify(this.sites)+'}';
+
+    this.url = BASE_URL+"chat_rooms/"; 
+    this.body = '{"chat_room":{"name": "'+document.querySelector('#name input#input').value+'"}, "user_id": "'+this.userid+'" ,"hosts":'+JSON.stringify(this.sites)+'}';
   },
   responseHandler: function(e){
     // console.log(e);
