@@ -4,9 +4,10 @@
 	<link rel="import" href="chatroom-cards/chatroom-cards.html">
 	<link rel="import" href="new-chatroom/new-chatroom.html">
 	<link rel="import" href="edit-chatroom/edit-chatroom.html">
-  	<link rel="import" href="login/login.html">
+  	<link rel="import" href="chattr-login/chattr-login.html">
 
 <style>
+
 .login {
 	background: #16a085;
 	height: 100vh;
@@ -36,6 +37,7 @@ header a.logo {
     text-decoration: none;
     color: white;
     float: left;
+    width: 45%;
     padding: 10px;
     margin: 0 -10px;
     font-size: 40px;
@@ -49,56 +51,62 @@ header a.logo span {
 	margin-top: -5px;
 	font-family: "Architects Daughter", cursive; 
 }
-header nav {
-    float: right;
-    width: 50%; 
-}
-header nav p {
+
+.user-box{
 	background: rgba(0,0,0,0.15);
 	float: right;
 	margin: 0;
-	padding: 15px 20px 1px 10px;
+	width: 20%;
+	padding: 15px 20px 0px 10px;
 }
 
-header nav p span, 
-header nav p a {
+.user-box span, 
+.user-box a {
 	width: 100%;
 	display: inline-block;
 	font-size: 11px;
 	margin: 0;
 	padding: 0;
 }
-header nav p span {
+.user-box span {
 	font-size: 16px;
 	text-align: right;
 	padding: 0 0 5px 0;
 	float: left;
 	border-bottom: 1px solid rgba(255,255,255,0.4);
 }
-header nav p a {
+.user-box a {
 	text-align: right;
 	width: auto;
 	padding: 5px;
 	border-radius: 3px;
 	margin: 5px;
+	color: white;
+	text-decoration:none;
 }
 
- 
+ header nav {
+    float: right;
+    width: 35%; 
+}
 header nav a {
-      text-decoration: none;
-      font-size: 20px;
-      margin: 0 5px;
-      padding: 25px;
-      color: white;
-      float: right; }
-      header nav a:hover {
-        background: #107360; }
+	text-decoration: none;
+	font-size: 20px;
+	margin: 0 5px;
+	padding: 25px;
+	color: white;
+	float: right; 
+}
+header nav a:hover {
+    background: #107360; 
+}
 
 #view, .wrapper {
   max-width: 90%;
-  margin: auto; }
+  margin: auto; 
+}
 
-  #signout {
+#signout {
   	margin: 10vh auto;
   	padding: 5% 10%;
   	width: auto;
@@ -107,20 +115,46 @@ header nav a {
   	font-size: 22px;
   	text-align: center;
 }
-  	 #signout chattr-login {
-  		margin: auto;
-  		display: block;
-
-  	}
- 
-</style>
-
-<style is="custom-style">
-
-#cards {
-	/*--cards-background: ;*/
+#signout chattr-login {
+	margin: auto;
+	display: block;
 }
 
+@media (max-width: 1250px) {
+    header {
+    	font-size: 10px;
+    }
+    header .logo {
+    	float: left;
+    	width: 80% !important;
+    	text-align: left;
+    }
+    header nav {
+    	border-top: 1px solid white;
+    	width: 100%;
+    	margin: 0;
+    }
+    header nav a {
+    	width: 50%;
+    	float: right;
+    	margin: 0;
+    	text-align: center;
+    	font-size: 20px;
+    }
+
+
+}
+@media (max-width: 650px) {
+    header .logo {
+    	float: none;
+    	width: 100% !important;
+    	text-align: center;
+    }
+    .user-box {
+    	width: 100%;
+    }
+
+}
 </style>
 
 <template>
@@ -137,12 +171,13 @@ header nav a {
 		<header>
 			<div class="wrapper">
 				<a class="logo" href="#!/">Chattr |<span> Mangement Console</span></a>
+				<div class="user-box">
+					<span>{{userid}}: {{username}}</span><a class="username" href="/console/#!/signout">Sign Out</a>
+				</div>
 				<nav>
-					<p>
-						<span>{{userid}}: {{username}}</span><a class="username" href="/console/#!/signout">Sign Out</a>
-					</p>
-					<a href="/console/#!/new">New Chatroom</a>
-					<a href="">My Home</a>
+			
+				<a href="/console/#!/new">New Chatroom</a>
+				<a href="">My Home</a>
 				</nav>
 			</div>
 		</header>

@@ -15,6 +15,21 @@
 h1 {
   margin: 10px 0 0 0;
   padding: 0; }
+
+paper-input {
+    --paper-input-container-input: {
+      font-size: 22px;
+    };  
+}
+paper-input.fail {
+    --paper-input-container-color: #d14233 !important;
+    --paper-input-container-focus-color: #d14233 !important;
+}
+paper-input.done {
+    --paper-input-container-color: #27ae60 !important;
+    --paper-input-container-focus-color: #27ae60 !important;
+}
+
 </style>
 
 
@@ -23,8 +38,8 @@ h1 {
 <iron-ajax auto id="ajax" url="{{url}}" method="{{method}}" body="{{body}}" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
 
 
-  <h1>Edit Chatroom {{uid}} </h1>
-  <paper-input on-change="_nameChanged" id="name" value="{{name}}" label="Name"></paper-input>
+  <h1>Edit Chatroom </h1>
+  <paper-input class$="{{namestatus}}"  on-change="_nameChanged" id="name" value="{{name}}" label="Name"></paper-input>
 
   <template is="dom-repeat" items="{{siteConfigs}}">
     <site-config chatroom="{{item.chat_room_id}}" uid="{{item.id}}" bgcolour="{{item.bg_colour}}"  textcolour="{{item.text_colour}}" uri="{{item.uri}}"  id="{{index}}" auto> Site Config</site-config>
@@ -73,6 +88,7 @@ Polymer ({
     }
   },
   _nameChanged: function(e) {
+    this.namestatus = "saving";
     this.method = "PATCH";
     var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
     this.url = BASE_URL+"chat_rooms/"+this.uid; 
@@ -81,17 +97,39 @@ Polymer ({
   },
 
   responseHandler: function(e){
+    console.log(e.detail.response);
     if(e.detail.response.chat_room !== undefined){
       this.name = e.detail.response.chat_room.name;
       this.siteConfigs = e.detail.response.chat_room.hosts.reverse();
+      if(this.namestatus === "saving"){
+        this.async(function(){
+          this.namestatus = "done";
+          this.updateStyles();
+
+          this.async(function(){
+            this.namestatus = "";
+            this.updateStyles(); 
+          }, 5000);
+
+        }, 1000);
+      }
     } else {
       this.push('siteConfigs',  e.detail.response.host);
 
 
     }
+
   },
   errorHandler: function(e){
     console.error(e);
+    if(this.namestatus === "saving"){
+      this.async(function(){
+          this.namestatus = "fail";
+          this.updateStyles();
+       
+
+      }, 1000);
+    }
   }
    
 }); 

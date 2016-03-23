@@ -22,7 +22,7 @@
 :host {
   --my-background-color: rgb(50,50,50);
   --my-header-color: white;
-  --my-text-color: white;
+  --my-text-color: black;
 
   font-family: "Open Sans", sans-serif; 
   display: block;
@@ -192,7 +192,6 @@ Polymer ({
     loggedin: {type: Boolean, observer: "_loggedInChange"}
     },
     ready: function(){
-      console.log(this.updateStyles);
       this.loggedinaccess = false;
       this.loggedin = false;
       this.url = "https://salty-taiga-73405.herokuapp.com/api/v1/chat_rooms/"+this.chatroomid;

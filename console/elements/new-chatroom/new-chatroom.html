@@ -45,6 +45,7 @@ Polymer ({
       this.siteConfigs = [1];
       this.sites = [];
       this.sites2 = [];
+
   },
   newSite: function(e){
     this.push('siteConfigs', this.siteConfigs[this.siteConfigs.length-1]+1);
@@ -54,10 +55,11 @@ Polymer ({
     this.sites = document.querySelectorAll('#site-configs-con site-config');
     
     [].forEach.call(this.sites, function (entry) {
+      console.log(entry.children[2]);
       this.sites2.push({
-        uri: entry.children[2].value,
-        text_colour: entry.children[3].children[1].value,
-        bg_colour: entry.children[3].children[0].value,
+        uri: entry.children[1].value,
+        text_colour: entry.children[2].children[1].value,
+        bg_colour: entry.children[2].children[0].value,
       }); 
  
     }, this);
@@ -70,7 +72,10 @@ Polymer ({
     this.body = '{"chat_room":{"name": "'+document.querySelector('#name input#input').value+'"}, "user_id": "'+this.userid+'" ,"hosts":'+JSON.stringify(this.sites)+'}';
   },
   responseHandler: function(e){
-    // console.log(e);
+    console.log(e);
+    var pages = document.querySelector('my-app');
+    pages.route = "home";
+    pages.kick++;
   },
   errorHandler: function(e){
     console.log(e);

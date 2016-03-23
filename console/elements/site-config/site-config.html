@@ -12,8 +12,10 @@
   overflow: hidden;
   display: block;
   padding: 10px;
-  border-radius: 5px;
-  margin: 10px; }
+  border-radius: 2px;
+  margin: 10px 0px; 
+border: 1px solid #ccc;
+}
 
 section.colours {
   background: green; }
@@ -21,6 +23,14 @@ section.colours {
     float: left;
     width: 50%; }
 
+paper-input.fail {
+    --paper-input-container-color: #d14233 !important;
+    --paper-input-container-focus-color: #d14233 !important;
+}
+paper-input.done {
+    --paper-input-container-color: #27ae60 !important;
+    --paper-input-container-focus-color: #27ae60 !important;
+}
 
 
 </style>
@@ -29,15 +39,14 @@ section.colours {
 
 
 
-	<content></content>
 <iron-ajax auto id="ajax" url="{{url}}" method="{{method}}" body="{{body}}" handle-as="json" content-type="application/json" on-response="responseHandler" on-error="errorHandler"></iron-ajax>
 
-	<paper-button on-click="removeSite" class="btn remove remove-site">Remove Site</paper-button>
-	<paper-input on-change="_uriChanged" id="site-url" auto-validate required  label="Site URL" value="{{uri}}"></paper-input>
+	<paper-input class$="{{uristatus}}" on-change="_uriChanged" id="siteurl" auto-validate required  label="Site URL" value="{{uri}}"></paper-input>
 	<section class="colours">
-		<paper-input on-change="_bgChanged" pattern="[0-9a-f]*" char-counter maxlength="6" auto-validate required error-message="Invalid Colour!" label="Background Colour" value="{{bgcolour}}"><div prefix>#</div></paper-input>
-		<paper-input on-change="_txtChanged" pattern="[0-9a-f]*" char-counter maxlength="6" auto-validate required error-message="Invalid Colour!" label="Text Colour" value="{{textcolour}}"><div prefix>#</div></paper-input>
+		<paper-input class$="{{bgstatus}}" on-change="_bgChanged" pattern="[0-9a-f]*" char-counter maxlength="6" auto-validate required error-message="Invalid Colour!" label="Background Colour" value="{{bgcolour}}"><div prefix>#</div></paper-input>
+		<paper-input class$="{{txtstatus}}" on-change="_txtChanged" pattern="[0-9a-f]*" char-counter maxlength="6" auto-validate required error-message="Invalid Colour!" label="Text Colour" value="{{textcolour}}"><div prefix>#</div></paper-input>
 	</section>
+  <paper-button on-click="removeSite" class="btn remove remove-site">Remove Site</paper-button>
 
 </template>
 
@@ -59,27 +68,30 @@ section.colours {
   },
   _uriChanged: function(){
     if(this.auto){
+      this.uristatus = "saving";
+      this.saving = "uri";
       this.method = "PATCH";
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-      var USER_ID = '1'; 
       this.url = BASE_URL+"chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
       this.body = '{"host":{ "uri":"'+this.uri+'"}}';
     }
   },
   _bgChanged: function(){
     if(this.auto){
+      this.bgstatus = "saving";
+      this.saving = "bg";
       this.method = "PATCH";
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-      var USER_ID = '1'; 
       this.url = BASE_URL+"chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
       this.body = '{"host":{ "bg_colour":"'+this.bgcolour+'"}}';
     }
    },
   _txtChanged: function(){
     if(this.auto){
+      this.txtstatus = "saving";
+      this.saving = "txt";
       this.method = "PATCH";
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-      var USER_ID = '1'; 
       this.url = BASE_URL+"chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
       this.body = '{"host":{ "text_colour":"'+this.textcolour+'"}}';
     }
@@ -92,16 +104,35 @@ section.colours {
     if(this.auto){
       this.method = "DELETE"; 
       var BASE_URL = 'https://salty-taiga-73405.herokuapp.com/api/v1/';
-      var USER_ID = '1'; 
       this.url = BASE_URL+"chat_rooms/"+this.chatroom+"/hosts/"+this.uid; 
       this.body = '';
     }
   },  
   responseHandler: function(e){
-    // console.log(e);
+    if(this.auto){
+      this.async(function(){
+
+        if(this.saving === "uri"){
+          this.uristatus = "done";
+        }else if (this.saving === "bg"){
+          this.bgstatus = "done";
+        }else if (this.saving === "txt"){
+          this.txtstatus = "done";
+        }
+        this.updateStyles();
+      }, 1000);
+    }
   },
   errorHandler: function(e){
-    console.log(e);
+    console.error(e);
+            if(this.saving === "uri"){
+          this.uristatus = "fail";
+        }else if (this.saving === "bg"){
+          this.bgstatus = "fail";
+        }else if (this.saving === "txt"){
+          this.txtstatus = "fail";
+        }
+        this.updateStyles();
   }
 
   }); 

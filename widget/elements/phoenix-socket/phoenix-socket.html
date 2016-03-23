@@ -26,7 +26,7 @@ Polymer ({
     ready: function(e){
         // this.userid2 = 1;
         // this.chatroomid2 = 10;
-        console.log(this.userid);
+        console.log("Pocket Id : ", this.userid);
         this.socket = new Phoenix.Socket("ws://salty-taiga-73405.herokuapp.com/socket/websocket");
         this.socket.connect({user_id: this.userid});
         this.chan = this.socket.chan("rooms:"+this.chatroomid, { token: 'roomToken', user_id: this.userid} );

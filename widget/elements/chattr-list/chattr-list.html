@@ -55,7 +55,7 @@ paper-input {
     <div id="region">
         <x-scrollable scroll-target="region">
     	   <template is="dom-repeat" id="resultList" items="{{messages}}">
-    	       <chattr-message me="{{compare(item.user_id)}}" username="{{item.user.name}}" id="{{item.message_id}}" uid="{{item.message_id}}">{{item.message}}</chattr-message>   
+    	       <chattr-message me="{{compare(item.user.id)}}" username="{{item.user.name}}" id="{{item.message_id}}" uid="{{item.message_id}}">{{item.message}}</chattr-message>   
     	   </template>
 
             <template is="dom-repeat" id="resultList" items="{{usersTyping}}">
@@ -122,7 +122,8 @@ Polymer ({
         return this.messages[index] !== undefined;
     },
     compare: function (user_id) {
-        console.log(this.userid);
+        // console.log("MESSAGE USER ID", parseInt(user_id));
+        // console.log("Logged User ID", parseInt(this.userid));
         return parseInt(user_id) === parseInt(this.userid);
     },
     responseHandler: function(e){
@@ -130,13 +131,13 @@ Polymer ({
         [].forEach.call(messages , function (item, i, arr) {
             messages[i].message_id = item.id;
         });
-        this.messages = messages;
+        this.messages = messages.reverse();
     	this.scrollToBottom();
     },
     scrollToBottom: function(){
         Polymer.dom.flush();
         this.async(function(){
-                 this.$.region.scroll(0,this.$.region.scrollHeight - this.$.region.clientHeight);
+            this.$.region.scroll(0,this.$.region.scrollHeight - this.$.region.clientHeight);
         },1);
     },
     typingMessage: function(e){
@@ -181,7 +182,7 @@ Polymer ({
         throw "Couldn't find object with id: " + id;
     },
     _addMessage:function(e){
-    	this.push('messages',  {"user_id":e.detail.msg.user_id,"message":e.detail.msg.message,"longitude":null,"location":null,"latitude":null,"message_id":e.detail.msg.message_id,"chat_room_id":this.chatroomId});
+    	this.push('messages',  {"user":e.detail.msg.user, "message":e.detail.msg.message,"longitude":null,"location":null,"latitude":null,"message_id":e.detail.msg.message_id,"chat_room_id":this.chatroomId});
         this.scrollToBottom();
     },
     _changeMessage: function(e){

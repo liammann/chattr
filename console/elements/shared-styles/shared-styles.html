@@ -2,17 +2,90 @@
 
 <style>
 
+@keyframes bigsmall {
+    0% {border-radius: 50%;}
+    50% {border-radius: 30%; width: 5px; height: 5px; margin: 8px; opacity: 0}
+    100% {border-radius: 50%;}
+}
+@keyframes fadein {
+    0% {opacity: 0; font-size: 5px; top: 34px; right: 8px;}
+    100% {opacity: 1; font-size: 20px; top: 24px; right: 3px;}
+}
+.saving,
+.fail, 
+.done {
+	position: relative;
+}
+.saving:after{
+	content: "";
+    top: 26px;
+    right: 6px;
+    width: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    display: block;
+    height: 20px;
+    position: absolute;
+    border-radius: 50%;
+    animation-name: bigsmall;
+    animation-duration: 1.15s;
+    animation-iteration-count: infinite;
+}
+.done:after{
+    content: "✓";
+    top: 28px;
+    right: 6px;
+    /*background: rgb(0, 60, 133);*/
+    display: block;
+    position: absolute;
+    animation-duration: 1.15s;
+    animation-iteration-count: infinite;
+    color: #27ae60;
+    font-size: 20px;
+    padding: 0px 5px;
+    opacity: 0;
+    animation-name: fadein;
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+}
+.fail:after{
+    content: "✕";
+    top: 28px;
+    right: 6px;
+    display: block;
+    position: absolute;
+    animation-duration: 1.15s;
+    animation-iteration-count: infinite;
+    color: #d14233;
+    font-size: 20px;
+    padding: 0px 5px;
+    opacity: 0;
+    animation-name: fadein;
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+}
 
 paper-button.btn {
 	background: #e3e3e3;
 	border: 1px solid #ccc;
-	padding: 7px 10px;
+	/*padding: 7px 10px;*/
+	padding: 6px 10px 5px 8px;
 	color: black;
 	text-transform: capitalize;
 	margin: 0.5%;
 	font-size: 20px;
 	transition: all linear 0.25s;
 }
+paper-button.btn.link {
+		padding:  0px;
+
+}
+paper-button.btn.link a{
+	padding: 6px 10px;
+	display: block;
+}
+
 paper-button.btn:hover {
 	background-color: #ccc;
 	transition: all linear 0.25s;
@@ -37,16 +110,16 @@ paper-button.remove {
   color: white;
   border: 1px solid #990000;
   }
-  paper-button.remove:hover {
+paper-button.remove:hover {
   	background: #990000;		
   	transition: all linear 0.25s;
-  }
+}
 
-  paper-button.remove-site {
-  	float: right;
+paper-button.remove-site {
   font-size: 15px; 
   padding: 5px;
-  }
+  width: 99%;
+}
 
 
 
