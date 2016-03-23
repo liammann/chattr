@@ -213,7 +213,7 @@ Polymer ({
         if(data[i].uri === window.location.host){
           this.customStyle['--my-background-color'] = "#"+data[i].bg_colour;
           this.customStyle['--my-header-color'] = "#"+data[i].text_colour;
-          this.customStyle['--my-text-color'] = "#"+data[i].text_colour;
+          this.customStyle['--my-text-color'] = "#"+data[i].bg_colour;
         }
       }
       this.updateStyles();
