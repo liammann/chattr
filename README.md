@@ -1,4 +1,4 @@
-# chattr
+# Chattr - Widget and Console
 Works best in latest version of Google Chrome
 
 Live widget preview at [webres.liammann.com](http://webres.liammann.com/ "Title") 
